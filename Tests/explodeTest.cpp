@@ -81,9 +81,10 @@ namespace Tests
 
 		TEST_METHOD( LambdaExplodeTest )
 		{
-			auto&& lambda = []( int a, bool b, char& c ) { return a != 0 && b && c != 'a'; };
+			auto&& lambda = []( int& a, bool b, char& c ) { return a != 0 && b && c != 'a'; };
 			char someChar = 'x';
-			Assert::IsFalse( kmu::explode( lambda, forward_as_tuple( 5, false, someChar ) ) );
+			int x = 5;
+			Assert::IsFalse( kmu::explode( lambda, forward_as_tuple( x, false, someChar ) ) );
 
 			Assert::AreEqual( kmu::explode( 
 				[]( const char* pCString ) { return string( pCString ); },

@@ -57,7 +57,9 @@ namespace kmu
 		template <typename FunctorType, typename TupleType>
 		static inline ReturnType call( FunctorType&& functor, TupleType&& tupleArgs )
 		{
-			return functor( std::get<Index>( std::forward<TupleType>( tupleArgs ) )... );
+			return functor( std::forward<decltype( std::get<Index>( 
+				std::forward<TupleType>( tupleArgs ) ))>
+							( std::get<Index>( std::forward<TupleType>( tupleArgs ) ) )... );
 		}
 
 		template <typename FunctorType, typename TupleType>
