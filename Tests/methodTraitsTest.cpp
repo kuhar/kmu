@@ -29,6 +29,18 @@ namespace Tests
 							decltype( &testStruct::isEmpty )>::return_type, void >::value );
 			Assert::AreEqual( ( int ) kmu::method_traits<
 							decltype( &testStruct::isEmpty )>::argument_count, 0 );
+			Assert::IsTrue( 
+				kmu::method_traits<decltype( &testStruct::isEmpty )>::is_const::value );
+		}
+
+		TEST_METHOD( TwoArgMethodTraitsTest )
+		{
+			Assert::IsTrue( std::is_same<kmu::method_traits<
+							decltype( &testStruct::twoArg )>::return_type, int& >::value );
+			Assert::AreEqual( ( int ) kmu::method_traits<
+							  decltype( &testStruct::twoArg )>::argument_count, 2 );
+			Assert::IsFalse(
+				kmu::method_traits<decltype( &testStruct::twoArg )>::is_const::value );
 		}
 
 
@@ -37,6 +49,8 @@ namespace Tests
 		struct testStruct
 		{
 			void isEmpty() const;
+
+			int& twoArg( float, bool );
 		};
 
 	};

@@ -14,6 +14,21 @@ namespace kmu
 {
 
 	template<typename Signature>
+	struct is_const_method;
+
+	template<typename ReturnType, typename Clazz, typename... Args>
+	struct is_const_method<ReturnType( Clazz::* ) ( Args... )>
+		: public std::false_type
+	{
+	};
+
+	template<typename ReturnType, typename Clazz, typename... Args>
+	struct is_const_method<ReturnType( Clazz::* ) ( Args... ) const>
+		: public std::true_type
+	{
+	};
+
+	template<typename Signature>
 	struct method_traits;
 
 	template<typename ReturnType, typename Clazz, typename... Args>
@@ -36,8 +51,8 @@ namespace kmu
 	};
 
 	template<typename ReturnType, typename Clazz, typename... Args>
-	struct method_traits<ReturnType( Clazz::* ) ( Args... ) const> :
-		public method_traits<ReturnType( Clazz::* ) ( Args... )>
+	struct method_traits<ReturnType( Clazz::* ) ( Args... ) const>
+		: public method_traits<ReturnType( Clazz::* ) ( Args... )>
 	{
 		using is_const = std::true_type;
 	};
