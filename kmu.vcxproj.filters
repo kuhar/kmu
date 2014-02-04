@@ -18,5 +18,8 @@
     <ClInclude Include="explode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="method_traits.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
