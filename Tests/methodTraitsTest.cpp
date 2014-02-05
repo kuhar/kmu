@@ -53,6 +53,25 @@ namespace Tests
 				&testStruct::twoArg )>::return_type, int&>::value );
 		}
 
+		TEST_METHOD( FunctorMethodTraitsTest )
+		{
+			std::function<size_t( int, char, bool&)> firstLambda 
+				= []( int a, char b, bool& c ) -> size_t { return 0; };
+			
+			Assert::IsTrue( kmu::method_traits<decltype( firstLambda )>::is_functor::value );
+			Assert::IsTrue( kmu::method_traits<decltype( firstLambda )>::is_const::value );
+
+			Assert::IsTrue( std::is_same<kmu::method_traits<decltype( firstLambda )>
+							::return_type, size_t>::value );
+
+			Assert::AreEqual( (int) kmu::method_traits<decltype( firstLambda )>::arity, 3 );
+			Assert::IsTrue( std::is_same<kmu::method_traits<decltype( firstLambda )>
+							::argument<0>::type, int>::value );
+			Assert::IsTrue( std::is_same<kmu::method_traits<decltype( firstLambda )>
+							::argument<1>::type, char>::value );
+			Assert::IsTrue( std::is_same<kmu::method_traits<decltype( firstLambda )>
+							::argument<2>::type, bool&>::value );
+		}
 
 	private:
 

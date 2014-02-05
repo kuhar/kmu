@@ -18,28 +18,29 @@
 
 namespace kmu
 {
+
 	namespace impl // Implementation
 	{
-		template <int... Index>
+		template <size_t... Index>
 		struct x_index_tuple_type
 		{
-			template <int N>
+			template<size_t N>
 			using append = x_index_tuple_type<Index..., N>;
 		};
 
-		template <int N>
+		template<size_t N>
 		struct x_make_index
 		{
 			using type = typename x_make_index<N - 1>::type::template append<N - 1>;
 		};
 
-		template <>
+		template<>
 		struct x_make_index<0>
 		{
 			using type = x_index_tuple_type<>;
 		};
 
-		template <int N>
+		template<size_t N>
 		using x_index_tuple = typename x_make_index<N>::type;
 
 		template<typename Signature> // GCC's implementation
@@ -56,7 +57,7 @@ namespace kmu
 	template <typename Index, typename... Args>
 	struct FunctorCaller;
 
-	template <typename ReturnType, int... Index>
+	template <typename ReturnType, size_t... Index>
 	struct FunctorCaller<ReturnType, impl::x_index_tuple_type<Index...>>
 	{
 		template <typename FunctorType, typename TupleType>

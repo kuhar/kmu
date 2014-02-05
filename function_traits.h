@@ -12,6 +12,7 @@
 
 namespace kmu
 {
+
 	template<typename Signature>
 	struct function_traits;
 
@@ -51,6 +52,26 @@ namespace kmu
 		: public function_traits<ReturnType( Clazz, Args... )>
 	{
 	};
-	
 
+	template<typename Functor>
+	struct function_traits
+	{
+	private:
+		using x_traits = function_traits<decltype( &Functor::operator() )>;
+
+	public:
+		using return_type = typename x_traits::return_type;
+
+		enum : size_t
+		{
+			arity = x_traits::arity
+		};
+
+		template<size_t N>
+		struct argument
+		{
+			using type = typename x_traits::template argument<N>::type;
+		};
+	};
+	
 } // namespace kmu
