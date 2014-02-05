@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="explode.h" />
+    <ClInclude Include="function_traits.h" />
     <ClInclude Include="method_traits.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

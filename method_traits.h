@@ -40,13 +40,13 @@ namespace kmu
 
 		enum : size_t
 		{
-			argument_count = sizeof... ( Args )
+			arity = sizeof... ( Args )
 		};
 
 		template<size_t N>
 		struct argument
 		{
-			static_assert ( N < argument_count,
+			static_assert ( N < arity,
 							"Given index is greater than count of arguments" );
 			using type = typename std::tuple_element<N, std::tuple<Args...>>::type;
 		};

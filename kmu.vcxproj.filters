@@ -21,5 +21,8 @@
     <ClInclude Include="method_traits.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="function_traits.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
