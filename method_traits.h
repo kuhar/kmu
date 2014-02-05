@@ -38,15 +38,17 @@ namespace kmu
 		using class_name = Clazz;
 		using is_const = std::false_type;
 
-		template<int N>
-		struct argument
-		{
-			using type = typename std::tuple_element<N, std::tuple<Args...>>::type;
-		};
-
-		enum
+		enum : size_t
 		{
 			argument_count = sizeof... ( Args )
+		};
+
+		template<size_t N>
+		struct argument
+		{
+			static_assert ( N < argument_count,
+							"Given index is greater than count of arguments" );
+			using type = typename std::tuple_element<N, std::tuple<Args...>>::type;
 		};
 	};
 
