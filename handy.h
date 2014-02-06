@@ -52,22 +52,13 @@ namespace kmu
 			typedef decltype( std::declval<Functor>()( std::declval<ArgTypes>()... ) ) type;
 		};
 
-		template<int FirstValue, int SecondValue>
+		template<int FirstValue, int SecondValue = 0>
 		struct x_absolute_value
 		{
 			enum
 			{
 				value = ( FirstValue - SecondValue ) < 0 ? 
 				-( FirstValue - SecondValue ) : ( FirstValue - SecondValue )
-			};
-		};
-
-		template<int Value>
-		struct x_absolute_value<Value, 0>
-		{
-			enum
-			{
-				value = Value < 0 ? -Value : Value
 			};
 		};
 
