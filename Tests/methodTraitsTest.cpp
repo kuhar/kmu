@@ -27,8 +27,8 @@ namespace Tests
 		{
 			Assert::IsTrue( std::is_same<kmu::method_traits<
 							decltype( &testStruct::isEmpty )>::return_type, void >::value );
-			Assert::AreEqual( ( int ) kmu::method_traits<
-							decltype( &testStruct::isEmpty )>::arity, 0 );
+			Assert::AreEqual( 0, ( int ) kmu::method_traits<
+							  decltype( &testStruct::isEmpty )>::arity );
 			Assert::IsTrue( 
 				kmu::method_traits<decltype( &testStruct::isEmpty )>::is_const::value );
 			
@@ -38,8 +38,8 @@ namespace Tests
 		{
 			Assert::IsTrue( std::is_same<kmu::method_traits<
 							decltype( &testStruct::twoArg )>::return_type, int& >::value );
-			Assert::AreEqual( ( int ) kmu::method_traits<
-							  decltype( &testStruct::twoArg )>::arity, 2 );
+			Assert::AreEqual( 2, ( int ) kmu::method_traits<
+							  decltype( &testStruct::twoArg )>::arity );
 			Assert::IsFalse(
 				kmu::method_traits<decltype( &testStruct::twoArg )>::is_const::value );
 
@@ -64,7 +64,7 @@ namespace Tests
 			Assert::IsTrue( std::is_same<kmu::method_traits<decltype( firstLambda )>
 							::return_type, size_t>::value );
 
-			Assert::AreEqual( (int) kmu::method_traits<decltype( firstLambda )>::arity, 3 );
+			Assert::AreEqual( 3, ( int ) kmu::method_traits<decltype( firstLambda )>::arity );
 			Assert::IsTrue( std::is_same<kmu::method_traits<decltype( firstLambda )>
 							::argument<0>::type, int>::value );
 			Assert::IsTrue( std::is_same<kmu::method_traits<decltype( firstLambda )>

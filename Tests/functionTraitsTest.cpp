@@ -30,13 +30,13 @@ namespace Tests
 		{
 			Assert::IsTrue( std::is_same<kmu::function_traits<
 							decltype( firstFunction )>::return_type, void >::value );
-			Assert::AreEqual( ( int ) kmu::function_traits<
-							  decltype( firstFunction )>::arity, 0 );
+			Assert::AreEqual( 0, ( int ) kmu::function_traits<
+							  decltype( firstFunction )>::arity );
 
 			Assert::IsTrue( std::is_same<kmu::function_traits<
 							decltype( secondFunction )>::return_type, bool& >::value );
-			Assert::AreEqual( ( int ) kmu::function_traits<
-							  decltype( secondFunction )>::arity, 2 );
+			Assert::AreEqual( 2, ( int ) kmu::function_traits<
+							  decltype( secondFunction )>::arity );
 			Assert::IsTrue( std::is_same< kmu::function_traits<
 							decltype( secondFunction )>::argument<0>::type, void* >::value );
 			Assert::IsTrue( std::is_same<kmu::function_traits<
@@ -47,13 +47,13 @@ namespace Tests
 		{
 			Assert::IsTrue( std::is_same<kmu::function_traits<
 							decltype( &testStruct::isEmpty )>::return_type, void >::value );
-			Assert::AreEqual( ( int ) kmu::function_traits<
-							  decltype( &testStruct::isEmpty )>::arity, 1 );
+			Assert::AreEqual( 1, ( int ) kmu::function_traits<
+							  decltype( &testStruct::isEmpty )>::arity );
 
 			Assert::IsTrue( std::is_same<kmu::function_traits<
 							decltype( &testStruct::twoArg )>::return_type, int& >::value );
-			Assert::AreEqual( ( int ) kmu::function_traits<
-							  decltype( &testStruct::twoArg )>::arity, 3 );
+			Assert::AreEqual( 3, ( int ) kmu::function_traits<
+							  decltype( &testStruct::twoArg )>::arity );
 			Assert::IsTrue( std::is_same< kmu::function_traits<
 							decltype( &testStruct::twoArg )>::argument<0>::type,
 							testStruct >::value );
@@ -72,7 +72,7 @@ namespace Tests
 			Assert::IsTrue( std::is_same<kmu::function_traits<decltype( firstLambda )>
 							::return_type, size_t>::value );
 
-			Assert::AreEqual( ( int ) kmu::function_traits<decltype( firstLambda )>::arity, 4 );
+			Assert::AreEqual( 4, ( int ) kmu::function_traits<decltype( firstLambda )>::arity );
 			Assert::IsTrue( std::is_same<kmu::function_traits<decltype( firstLambda )>
 							::argument<1>::type, int>::value );
 			Assert::IsTrue( std::is_same<kmu::function_traits<decltype( firstLambda )>

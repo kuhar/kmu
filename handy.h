@@ -11,6 +11,7 @@
 
 #pragma once
 
+#include <type_traits>
 #include <vector>
 #include <array>
 #include <cassert>
@@ -51,39 +52,49 @@ namespace kmu
 			typedef decltype( std::declval<Functor>()( std::declval<ArgTypes>()... ) ) type;
 		};
 
-		template<size_t... Index>
-		inline const std::array<size_t, sizeof... ( Index )>
-			x_make_ascending_range( x_index_tuple_type<Index...> )
+		template<int FirstValue, int SecondValue>
+		struct x_absolute_value
 		{
-			return { Index... };
-		}
+			enum
+			{
+				value = ( FirstValue - SecondValue ) < 0 ? 
+				-( FirstValue - SecondValue ) : ( FirstValue - SecondValue )
+			};
+		};
 
-		template<size_t... Index, size_t Count = sizeof... ( Index )>
-		inline const std::array<size_t, sizeof... ( Index )>
-			x_make_descending_range( x_index_tuple_type<Index...> )
+		template<int Value>
+		struct x_absolute_value<Value, 0>
 		{
-			return { ( Count - Index - 1 )... };
-		}
+			enum
+			{
+				value = Value < 0 ? -Value : Value
+			};
+		};
 
 	} // namespace impl
 
 	template<typename T>
 	std::vector<T> makeVectorOfElements( const T& element, size_t count = 1 )
 	{
-		assert( count > 0 );
 		return std::vector<T>( count, element );
 	}
 
-	template<size_t Count>
-	inline const std::array<size_t, Count> makeRange()
+	template<int From, int To,
+		size_t Count = ( size_t ) impl::x_absolute_value<From, To>::value + 1>
+	inline const std::array<int, Count> makeRange()
 	{
-		return impl::x_make_ascending_range( impl::x_index_tuple<Count>() );
-	}
+		std::array<int, Count> tab = std::array<int, Count>();
+		// ^ to silent runtime checks
 
-	template<size_t Count>
-	inline const std::array<size_t, Count> makeDescendingRange()
-	{
-		return impl::x_make_descending_range( impl::x_index_tuple<Count>() );
+		int step = (To - From) < 0 ? -1 : 1;
+		int startValue = From;
+		for( int i = 0; i < Count; ++i )
+		{
+			tab[i] = startValue;
+			startValue += step;
+		}
+
+		return tab;
 	}
 
 } // namespace kmu

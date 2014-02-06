@@ -24,37 +24,50 @@ namespace Tests
 
 		TEST_METHOD( AscendingRangeTest )
 		{
-			auto range = kmu::makeRange<10>();
-			Assert::AreEqual( range.size(), 10u );
+			auto range = kmu::makeRange<0, 10>();
+			Assert::AreEqual( range.size(), 11u );
 			for( size_t i = 0; i < range.size(); ++i )
 			{
-				Assert::AreEqual( range[i], i );
+				Assert::AreEqual( ( int ) i, range[i] );
 			}
 
-			auto emptyRange = kmu::makeRange<0>();
+			range = kmu::makeRange<10, 20>();
+			Assert::AreEqual( range.size(), 11u );
+			for( size_t i = 0; i < range.size(); ++i )
+			{
+				Assert::AreEqual( ( int ) i + 10, range[i] );
+			}
+
+			auto emptyRange = kmu::makeRange<0,0>();
+			Assert::AreEqual( 1u, emptyRange.size() );
 		}
 
 		TEST_METHOD( DescendingRangeTest )
 		{
-			auto range = kmu::makeDescendingRange<10>();
-			Assert::AreEqual( range.size(), 10u );
+			auto range = kmu::makeRange<10, 0>();
+			Assert::AreEqual( range.size(), 11u );
 			for( size_t i = 0; i < range.size(); ++i )
 			{
-				Assert::AreEqual( range[i], range.size() - i - 1 );
+				Assert::AreEqual( ( int ) ( range.size() - i - 1 ), range[i] );
 			}
 
-			auto emptyRange = kmu::makeDescendingRange<0>();
+			auto secondRange = kmu::makeRange<10, -10>();
+			Assert::AreEqual( secondRange.size(), 21u );
+			for( int value = 10, i = 0; value >= -10; --value, ++i )
+			{
+				Assert::AreEqual( value, secondRange[i] );
+			}
 		}
 
 		TEST_METHOD( MakeVectorOfElementsTest )
 		{
 			auto value = kmu::makeVectorOfElements( std::string( "meow" ) );
-			Assert::AreEqual( value.size(), 1u );
-			Assert::AreEqual( value.front(), std::string( "meow" ) );
+			Assert::AreEqual( 1u, value.size() );
+			Assert::AreEqual( std::string( "meow" ), value.front() );
 
 			value = kmu::makeVectorOfElements( std::string( "purr" ), 16 );
-			Assert::AreEqual( value.size(), 16u );
-			Assert::AreEqual( value.back(), std::string( "purr" ) );
+			Assert::AreEqual( 16u, value.size() );
+			Assert::AreEqual( std::string( "purr" ), value.back() );
 		}
 
 	};

@@ -45,12 +45,12 @@ namespace Tests
 		
 		TEST_METHOD( BasicExplodeTest )
 		{
-			Assert::AreEqual( kmu::explode( &dummyMethod, make_tuple( 2, 2.5f ) ), 5.0f );
+			Assert::AreEqual( 5.0f, kmu::explode( &dummyMethod, make_tuple( 2, 2.5f ) ) );
 
-			Assert::AreEqual( kmu::explode( &dummyFunction, make_tuple( 0, "Ala" ) ),
-							  string( "Ala0" ) );
+			Assert::AreEqual( string( "Ala0" ), 
+							  kmu::explode( &dummyFunction, make_tuple( 0, "Ala" ) ) );
 
-			Assert::AreEqual( kmu::explode( []() { return true;  }, make_tuple() ), true );
+			Assert::AreEqual( true, kmu::explode( []() { return true;  }, make_tuple() ) );
 		}
 
 		TEST_METHOD( FunctorExplodeTest )
@@ -70,13 +70,12 @@ namespace Tests
 			tuple<float> whateverTuple;
 			get<0>( whateverTuple ) = 3.2f;
 
-			Assert::AreEqual( kmu::explode( Whatever(), whateverTuple ), 3 );
-			Assert::AreEqual( kmu::explode( Whatever(), make_tuple( 'a' ) ), false );
+			Assert::AreEqual( 3, kmu::explode( Whatever(), whateverTuple ) );
+			Assert::AreEqual( false, kmu::explode( Whatever(), make_tuple( 'a' ) ) );
 
 			TemplateFunctor functor;
 			const auto constTuple = make_tuple( 5, 2.5f );
-			Assert::AreEqual( kmu::explode( std::move(functor), constTuple ), 12.5f );
-
+			Assert::AreEqual( 12.5f, kmu::explode( std::move( functor ), constTuple ) );
 		}
 
 		TEST_METHOD( LambdaExplodeTest )
@@ -86,9 +85,9 @@ namespace Tests
 			int x = 5;
 			Assert::IsFalse( kmu::explode( lambda, forward_as_tuple( x, false, someChar ) ) );
 
-			Assert::AreEqual( kmu::explode( 
+			Assert::AreEqual( string( "foobar" ), kmu::explode(
 				[]( const char* pCString ) { return string( pCString ); },
-				forward_as_tuple( "foobar" ) ), string( "foobar" ) );
+				forward_as_tuple( "foobar" ) ) );
 		}
 
 
