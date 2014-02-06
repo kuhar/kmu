@@ -79,12 +79,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Examples.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\kmu.vcxproj">
       <Project>{f1c381b1-7e6c-44f1-98a4-8010ff38be3e}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Examples.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
