@@ -1,7 +1,7 @@
 /*
-* explodeTest.cpp
+* functionTraitsTest.cpp
 *
-*  Created on: Feb 04, 2014
+*  Created on: Feb 06, 2014
 *      Author: Jakub 'kuhar' Kuderski
 */
 
