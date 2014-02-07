@@ -74,8 +74,7 @@ namespace kmu
 		size_t Count = ( size_t ) impl::x_absolute_value<From, To>::value + 1>
 	inline const std::array<int, Count> makeRange()
 	{
-		std::array<int, Count> tab = std::array<int, Count>();
-		// ^ to silent runtime checks
+		std::array<int, Count> tab;
 
 		int step = (To - From) < 0 ? -1 : 1;
 		int startValue = From;
