@@ -54,6 +54,7 @@ namespace kmu
 							"Given index is greater than count of arguments" );
 			using type = typename std::tuple_element<N, std::tuple<Args...>>::type;
 		};
+
 	};
 
 	template<typename ReturnType, typename Clazz, typename... Args>

@@ -53,7 +53,7 @@ namespace kmu
 		};
 
 		template<int FirstValue, int SecondValue = 0>
-		struct x_absolute_value
+		struct x_distance
 		{
 			enum
 			{
@@ -71,7 +71,7 @@ namespace kmu
 	}
 
 	template<int From, int To,
-		size_t Count = ( size_t ) impl::x_absolute_value<From, To>::value + 1>
+		size_t Count = ( size_t ) impl::x_distance<From, To>::value + 1>
 	inline const std::array<int, Count> makeRange()
 	{
 		std::array<int, Count> tab;

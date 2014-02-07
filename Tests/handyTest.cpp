@@ -72,16 +72,16 @@ namespace Tests
 
 		TEST_METHOD( XAbsoluteValueTest )
 		{
-			Assert::AreEqual( 5, ( int ) kmu::impl::x_absolute_value<5, 0>::value );
-			Assert::AreEqual( 5, ( int ) kmu::impl::x_absolute_value<0, 5>::value );
-			Assert::AreEqual( 5, ( int ) kmu::impl::x_absolute_value<-5, 0>::value );
-			Assert::AreEqual( 5, ( int ) kmu::impl::x_absolute_value<0, -5>::value );
-			Assert::AreEqual( 0, ( int ) kmu::impl::x_absolute_value<0, 0>::value );
-			Assert::AreEqual( 2, ( int ) kmu::impl::x_absolute_value<1, -1>::value );
-			Assert::AreEqual( 2, ( int ) kmu::impl::x_absolute_value<-1, 1>::value );
+			Assert::AreEqual( 5, ( int ) kmu::impl::x_distance<5, 0>::value );
+			Assert::AreEqual( 5, ( int ) kmu::impl::x_distance<0, 5>::value );
+			Assert::AreEqual( 5, ( int ) kmu::impl::x_distance<-5, 0>::value );
+			Assert::AreEqual( 5, ( int ) kmu::impl::x_distance<0, -5>::value );
+			Assert::AreEqual( 0, ( int ) kmu::impl::x_distance<0, 0>::value );
+			Assert::AreEqual( 2, ( int ) kmu::impl::x_distance<1, -1>::value );
+			Assert::AreEqual( 2, ( int ) kmu::impl::x_distance<-1, 1>::value );
 
-			Assert::AreEqual( 111, ( int ) kmu::impl::x_absolute_value<111>::value );
-			Assert::AreEqual( 111, ( int ) kmu::impl::x_absolute_value<-111>::value );
+			Assert::AreEqual( 111, ( int ) kmu::impl::x_distance<111>::value );
+			Assert::AreEqual( 111, ( int ) kmu::impl::x_distance<-111>::value );
 		}
 
 	};
