@@ -137,7 +137,7 @@ namespace kmu
 		{
 			or = FirstValue || SecondValue,
 			nor = !FirstValue || !SecondValue,
-			xor = FirstValue ^ SecondValue,
+			xor = FirstValue != SecondValue,
 			xnor = !xor,
 
 			and = FirstValue && SecondValue,
