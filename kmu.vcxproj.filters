@@ -30,5 +30,8 @@
     <ClInclude Include="integer_sequence.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="template_math.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

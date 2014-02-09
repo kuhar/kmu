@@ -16,6 +16,8 @@
 #include <array>
 #include <cassert>
 
+#include "template_math.h"
+
 namespace kmu
 {
 
@@ -31,16 +33,6 @@ namespace kmu
 			typedef decltype( std::declval<Functor>()( std::declval<ArgTypes>()... ) ) type;
 		};
 
-		template<int FirstValue, int SecondValue = 0>
-		struct x_distance
-		{
-			enum
-			{
-				value = ( FirstValue - SecondValue ) < 0 ? 
-				-( FirstValue - SecondValue ) : ( FirstValue - SecondValue )
-			};
-		};
-
 	} // namespace impl
 
 	template<typename T>
@@ -50,7 +42,7 @@ namespace kmu
 	}
 
 	template<int From, int To,
-		size_t Count = ( size_t ) impl::x_distance<From, To>::value + 1>
+		size_t Count = ( size_t ) kmu::distance<From, To>::value + 1>
 	inline const std::array<int, Count> makeRange()
 	{
 		std::array<int, Count> tab;

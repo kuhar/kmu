@@ -1,5 +1,5 @@
 /*
-* IntegerSequence.h
+* integer_sequence.h
 *
 *  Created on: Feb 09, 2014
 *      Author: Jakub "kuhar" Kuderski

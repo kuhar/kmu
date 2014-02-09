@@ -16,6 +16,7 @@
     <ClInclude Include="handy.h" />
     <ClInclude Include="integer_sequence.h" />
     <ClInclude Include="method_traits.h" />
+    <ClInclude Include="template_math.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F1C381B1-7E6C-44F1-98A4-8010FF38BE3E}</ProjectGuid>
