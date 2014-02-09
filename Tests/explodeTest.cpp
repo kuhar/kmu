@@ -90,7 +90,6 @@ namespace Tests
 				forward_as_tuple( "foobar" ) ) );
 		}
 
-
 	private:
 
 		static float dummyMethod( int a, float b )

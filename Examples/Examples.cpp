@@ -11,7 +11,7 @@ using namespace kmu;
 
 int main()
 {
-	explode( [](int){ cout << "Wazzza?"; }, make_tuple(1) );
+	explode( []( int ){ cout << "Wazzza?"; }, make_tuple( 1 ) );
 
 	return 0;
 }

@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="explode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="method_traits.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -25,6 +22,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="handy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="explode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="integer_sequence.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

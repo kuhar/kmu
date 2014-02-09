@@ -3,11 +3,12 @@
 *
 *  Created on: Feb 04, 2014
 *      Author: Jakub 'kuhar' Kuderski
+*
 */
 
 /* INFO:
-*  kmu::explode anables you to call every non-const callable object,
-*  not taking parametrs by rvalue references, with a std::tuple of parameters
+*  kmu::explode enables you to call every non-const callable object
+*  with a std::tuple of parameters
 */
 
 #pragma once
@@ -16,107 +17,35 @@
 #include <type_traits>
 #include <utility>
 
-#include "handy.h"
+#include "integer_sequence.h"
 
 namespace kmu
 {
 
-	template <typename Index, typename... Args>
-	struct FunctorCaller;
-
-	template <typename ReturnType, size_t... Index>
-	struct FunctorCaller<ReturnType, impl::x_index_tuple_type<Index...>>
+	namespace impl
 	{
-		template <typename FunctorType, typename TupleType>
-		static inline ReturnType call( FunctorType&& functor, TupleType&& tupleArgs )
+		// VC12 workaround
+		template <typename Functor, typename Tuple, size_t... Index>
+		auto x_explode_helper( Functor&& functor, Tuple&& tupleOfArgs, 
+							   integer_sequence<size_t, Index...> )
+			-> decltype( std::forward<Functor>( functor )( 
+			std::get<Index>( std::forward<Tuple>( tupleOfArgs ) )... ) )
 		{
-			return functor( std::forward<decltype( std::get<Index>( 
-				std::forward<TupleType>( tupleArgs ) ))>
-							( std::get<Index>( std::forward<TupleType>( tupleArgs ) ) )... );
+			return std::forward<Functor>( functor )( std::get<Index>( 
+				std::forward<Tuple>( tupleOfArgs ) )... );
 		}
 
-		template <typename FunctorType, typename TupleType>
-		static inline ReturnType call( FunctorType&& functor, const TupleType& tupleArgs )
-		{
-			return functor( std::get<Index>( tupleArgs )... );
-		}
-	};
+	} // namespace impl
 
-	template <int... Index>
-	struct FunctorCaller<void, impl::x_index_tuple_type<Index...>>
+	template <typename Functor, typename Tuple>
+	auto explode( Functor&& functor, Tuple&& tupleOfArgs )
+		-> decltype( impl::x_explode_helper( std::forward<Functor>( functor ), 
+		std::forward<Tuple>( tupleOfArgs ),
+	make_index_sequence<std::tuple_size<typename std::decay<Tuple>::type>::value>() ) )
 	{
-		template <typename FunctorType, typename TupleType>
-		static inline void call( FunctorType&& functor, TupleType&& tupleArgs )
-		{
-			functor( std::forward<decltype( std::get<Index>(
-				std::forward<TupleType>( tupleArgs ) ) )>
-				( std::get<Index>( std::forward<TupleType>( tupleArgs ) ) )... );
-		}
-
-		template <typename FunctorType, typename TupleType>
-		static inline void call( FunctorType&& functor, const TupleType& tupleArgs )
-		{
-			functor( std::get<Index>( tupleArgs )... );
-		}
-	};
-
-	template <typename Functor, typename... Args,
-		typename ReturnType = impl::x_result_of<Functor( Args... )>::type>
-	inline typename std::enable_if<std::is_same<ReturnType, void>::value, void>::type
-		explode( Functor&& functor, const std::tuple<Args...>& tupleArgs )
-	{
-			FunctorCaller<ReturnType, impl::x_index_tuple<sizeof...( Args )>>
-				::call( std::forward<Functor>( functor ), tupleArgs );
-	}
-
-	template <typename Functor, typename... Args,
-		typename ReturnType = impl::x_result_of<Functor( Args... )>::type>
-	inline typename std::enable_if<!std::is_same<ReturnType,
-		void>::value, ReturnType>::type
-		explode( Functor&& functor, const std::tuple<Args...>& tupleArgs )
-	{
-		return FunctorCaller<ReturnType, impl::x_index_tuple<sizeof...( Args )>>
-			::call( std::forward<Functor>( functor ), tupleArgs );
-	}
-
-	template <typename Functor, typename... Args, 
-		typename ReturnType = impl::x_result_of<Functor( Args... )>::type>
-	inline typename std::enable_if<std::is_same<ReturnType, void>::value, void>::type
-		explode( Functor&& functor, std::tuple<Args...>& tupleArgs )
-	{
-		FunctorCaller<ReturnType, impl::x_index_tuple<sizeof...( Args )>>
-			::call( std::forward<Functor>( functor ), tupleArgs );
-	}
-
-	template <typename Functor, typename... Args,
-		typename ReturnType = impl::x_result_of<Functor( Args... )>::type>
-	inline typename std::enable_if<!std::is_same<ReturnType,
-		void>::value, ReturnType>::type
-		explode( Functor&& functor, std::tuple<Args...>& tupleArgs )
-	{
-		return FunctorCaller<ReturnType, impl::x_index_tuple<sizeof...( Args )>>
-			::call( std::forward<Functor>( functor ), tupleArgs );
-	}
-
-	template <typename Functor, typename... Args,
-		typename ReturnType = impl::x_result_of<Functor( Args... )>::type>
-	inline typename std::enable_if<std::is_same<ReturnType, void>::value, void>::type
-		explode( Functor&& functor, std::tuple<Args...>&& tupleArgs )
-	{
-		FunctorCaller<ReturnType, impl::x_index_tuple<sizeof...( Args )>>
-			::call( std::forward<Functor>( functor ),
-			std::forward<decltype( tupleArgs )>( tupleArgs ) );
-	}
-
-	template <typename Functor, typename... Args,
-		typename ReturnType = impl::x_result_of<Functor( Args... )>::type>
-	inline typename std::enable_if<!std::is_same<ReturnType,
-		void>::value, ReturnType>::type
-		explode( Functor&& functor, std::tuple<Args...>&& tupleArgs )
-	{
-		return FunctorCaller<ReturnType, impl::x_index_tuple<sizeof...( Args )>>
-			::call( std::forward<Functor>( functor ),
-			std::forward<decltype( tupleArgs )>( tupleArgs ) );
+		return impl::x_explode_helper( std::forward<Functor>( functor ), 
+			std::forward<Tuple>( tupleOfArgs ),
+			make_index_sequence<std::tuple_size<typename std::decay<Tuple>::type>::value>() );
 	}
 
 } // namespace kmu
