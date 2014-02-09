@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="callback.h" />
     <ClInclude Include="explode.h" />
     <ClInclude Include="function_traits.h" />
     <ClInclude Include="handy.h" />
