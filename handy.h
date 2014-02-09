@@ -21,27 +21,6 @@ namespace kmu
 
 	namespace impl // Implementation
 	{
-		template <size_t... Index>
-		struct x_index_tuple_type
-		{
-			template<size_t N>
-			using append = x_index_tuple_type<Index..., N>;
-		};
-
-		template<size_t N>
-		struct x_make_index
-		{
-			using type = typename x_make_index<N - 1>::type::template append<N - 1>;
-		};
-
-		template<>
-		struct x_make_index<0>
-		{
-			using type = x_index_tuple_type<>;
-		};
-
-		template<size_t N>
-		using x_index_tuple = typename x_make_index<N>::type;
 
 		template<typename Signature> // GCC's implementation
 		class x_result_of;
