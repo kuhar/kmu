@@ -9,7 +9,6 @@
 #pragma once
 
 #include <type_traits>
-#include <typeinfo>
 #include <typeindex>
 #include <cstddef>
 #include <cassert>
@@ -59,10 +58,10 @@ namespace kmu
 
 	public:
 
-		using uninitializedType = impl::Uninitialized;
+		using UninitializedType = impl::Uninitialized;
 
 		Variant()
-			: m_currentTypeID( typeid( uninitializedType ) )
+			: m_currentTypeID( typeid( UninitializedType ) )
 		{
 		}
 
@@ -122,6 +121,12 @@ namespace kmu
 			
 			assert( m_currentTypeID == typeid( Type ) && "Type mismatch" );
 			return *reinterpret_cast<Type*>( &m_storage );
+		}
+
+		void reset()
+		{
+			Destroyer<StorageType, Ts...>::destroy( m_storage, m_currentTypeID );
+			m_currentTypeID = typeid( UninitializedType );
 		}
 
 		std::type_index getCurrentTypeID() const

@@ -35,6 +35,7 @@ int main()
 	cout << stringIntVariant.get<const char*>() << sizeof( stringIntVariant );
 	stringIntVariant.set<someClass>();
 	stringIntVariant.set<someClass>();
+	stringIntVariant.reset();
 
 	return 0;
 }
