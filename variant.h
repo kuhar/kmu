@@ -71,17 +71,6 @@ namespace kmu
 			Destroyer<StorageType, Ts...>::destroy( m_storage, m_currentTypeID );
 		}
 
-		template<typename Type, typename... Args>
-		void set( Args&&... params )
-		{
-			static_assert( kmu::is_one_of<Type, Ts...>::value,
-						   "Given type is not a subtype of this variant" );
-			
-			Destroyer<StorageType, Ts...>::destroy( m_storage, m_currentTypeID );
-			m_currentTypeID = typeid( Type );
-			new ( &m_storage ) Type( std::forward<Args>( params )... );
-		}
-
 		template<typename Type>
 		void set()
 		{
@@ -91,6 +80,17 @@ namespace kmu
 			Destroyer<StorageType, Ts...>::destroy( m_storage, m_currentTypeID );
 			m_currentTypeID = typeid( Type );
 			new ( &m_storage ) Type();
+		}
+
+		template<typename Type, typename... Args>
+		void set( Args&&... params )
+		{
+			static_assert( kmu::is_one_of<Type, Ts...>::value,
+						   "Given type is not a subtype of this variant" );
+			
+			Destroyer<StorageType, Ts...>::destroy( m_storage, m_currentTypeID );
+			m_currentTypeID = typeid( Type );
+			new ( &m_storage ) Type( std::forward<Args>( params )... );
 		}
 
 		template<typename Type, typename... Args>

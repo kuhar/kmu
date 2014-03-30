@@ -25,7 +25,9 @@ int main()
 	myVariant.set<char>( 'A' );
 	cout << myVariant.get<char>();
 	myVariant.set<char>( 'Z' );
-	cout << myVariant.get<char>() << myVariant.getCurrentTypeID().name();
+	cout << myVariant.get<char>();
+	myVariant.set<vector<int>>( 3, 5 );
+	cout << myVariant.getCurrentTypeID().name();
 
 	decltype( myVariant ) otherVariant = myVariant;
 	Variant<int, const char*, someClass> stringIntVariant;
