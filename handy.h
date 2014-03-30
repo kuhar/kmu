@@ -35,6 +35,59 @@ namespace kmu
 
 	} // namespace impl
 
+	template<typename First, typename... Rest>
+	struct is_one_of;
+
+	template<typename First, typename Second, typename... Rest>
+	struct is_one_of<First, Second, Rest...>
+	{
+		enum
+		{
+			value = std::is_same<First, Second>::value
+				? true : kmu::is_one_of<First, Rest...>::value
+		};
+	};
+
+	template<typename First, typename Second>
+	struct is_one_of<First, Second>
+	{
+		enum
+		{
+			value = std::is_same<First, Second>::value
+		};
+	};
+
+	template<typename Only>
+	struct is_one_of<Only>
+	{
+		enum 
+		{
+			value = false
+		};
+	};
+
+	template<typename First, typename... Rest>
+	struct are_all_unique;
+
+	template<typename First, typename... Rest>
+	struct are_all_unique<First, Rest...>
+	{
+		enum
+		{
+			value = !kmu::is_one_of<First, Rest...>::value
+					&& kmu::are_all_unique<Rest...>::value
+		};
+	};
+
+	template<typename Only>
+	struct are_all_unique<Only>
+	{
+		enum 
+		{
+			value = true
+		};
+	};
+
 	template<typename T>
 	std::vector<T> makeVectorOfElements( const T& element, size_t count = 1 )
 	{

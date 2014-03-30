@@ -33,7 +33,7 @@
     <ClInclude Include="template_math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="callback.h">
+    <ClInclude Include="variant.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
