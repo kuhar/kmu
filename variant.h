@@ -6,10 +6,13 @@
 *
 */
 
+// TODO: fix references
+
 #pragma once
 
 #include <type_traits>
 #include <typeindex>
+#include <memory>
 #include <cstddef>
 #include <cassert>
 
@@ -78,7 +81,7 @@ namespace kmu
 
 			Destroyer<StorageType, Ts...>::destroy( m_storage, m_currentTypeID );
 			m_currentTypeID = typeid( Type );
-			new ( &m_storage ) Type();
+			new ( std::addressof( m_storage ) ) Type();
 		}
 
 		template<typename Type, typename... Args>
@@ -89,7 +92,8 @@ namespace kmu
 			
 			Destroyer<StorageType, Ts...>::destroy( m_storage, m_currentTypeID );
 			m_currentTypeID = typeid( Type );
-			new ( &m_storage ) Type( std::forward<Args>( params )... );
+
+			new ( std::addressof( m_storage ) ) Type( std::forward<Args>( params )... );
 		}
 
 		template<typename Type, typename... Args>
@@ -100,7 +104,8 @@ namespace kmu
 			
 			Destroyer<StorageType, Ts...>::destroy( m_storage, m_currentTypeID );
 			m_currentTypeID = typeid( Type );
-			new ( &m_storage ) Type( params... );
+
+			new ( std::addressof( m_storage ) ) Type( params... );
 		}
 
 		template<typename Type>
@@ -110,7 +115,9 @@ namespace kmu
 						   "Given type is not a subtype of this variant" );
 			
 			assert( m_currentTypeID == typeid( Type ) && "Type mismatch" );
-			return *reinterpret_cast<Type*>( &m_storage );
+
+			using decayedType = typename std::decay<Type>::type;
+			return *reinterpret_cast<decayedType*>( std::addressof( m_storage ) );
 		}
 
 		template<typename Type>
@@ -120,7 +127,9 @@ namespace kmu
 						   "Given type is not a subtype of this variant" );
 			
 			assert( m_currentTypeID == typeid( Type ) && "Type mismatch" );
-			return *reinterpret_cast<Type*>( &m_storage );
+			
+			using decayedType = typename std::decay<Type>::type;
+			return *reinterpret_cast<decayedType*>( std::addressof( m_storage ) );
 		}
 
 		void reset()
@@ -151,7 +160,9 @@ namespace kmu
 			{
 				if( currentTypeID == typeid( First ) )
 				{
-					reinterpret_cast<First*>( &storage )->~First();
+					using deacyedFirst = typename std::decay<First>::type;
+					reinterpret_cast<deacyedFirst*>
+						( std::addressof( storage ) )->~deacyedFirst();
 					currentTypeID = typeid( impl::Uninitialized );
 					return;
 				}
@@ -169,4 +180,19 @@ namespace kmu
 		};
 
 	};
-}
+
+	template<typename Type, typename... Ts>
+	auto get( kmu::Variant<Ts...>& variant )
+		-> decltype ( variant.template get<Type>() )
+	{
+		return variant.template get<Type>();
+	}
+
+	template<typename Type, typename... Ts>
+	auto get( const kmu::Variant<Ts...>& variant )
+		-> decltype ( variant.template get<Type>() )
+	{
+		return variant.template get<Type>();
+	}
+
+} // namespace kmu

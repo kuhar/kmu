@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <functional>
 
 #include "explode.h"
 #include "variant.h"
@@ -36,6 +37,16 @@ int main()
 	stringIntVariant.set<someClass>();
 	stringIntVariant.set<someClass>();
 	stringIntVariant.reset();
+
+
+	Variant<int, std::reference_wrapper<int>> test;
+	test.set<int>( 5 );
+	int a = 6;
+	test.set<reference_wrapper<int>>( a );
+	int& b = test.get<std::reference_wrapper<int>>();
+	b = 7;
+	cout << endl << a;
+	cout << get<std::reference_wrapper<int>>( test );
 
 	return 0;
 }
