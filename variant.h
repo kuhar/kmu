@@ -180,6 +180,13 @@ namespace kmu
 			return get<Type>();
 		}
 
+		template<size_t Index,
+			typename Type = typename std::tuple_element<Index, std::tuple<Ts...>>::type>
+		auto get() const -> decltype( get<Type>() )
+		{
+				return get<Type>();
+		}
+
 		void reset()
 		{
 			Visitor<StorageType, Ts...>::destroy( m_storage, m_currentTypeID );
