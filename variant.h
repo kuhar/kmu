@@ -97,7 +97,7 @@ namespace kmu
 		}
 
 		Variant( Variant<Ts...>&& other )
-			: m_currentTypeID( UninitializedType )
+			: m_currentTypeID( typeid( UninitializedType ) )
 		{
 			Visitor<StorageType, Ts...>::moveInitialize( *this, std::move( other ) );
 		}

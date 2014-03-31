@@ -79,6 +79,7 @@ int main()
 	::get<1>( original ).id = 12;
 	cout << original.get<someClass>().id << endl;
 	original.set<someClass>( someClass() );
+	auto moveTest = std::move( original );
 
 	return 0;
 }
