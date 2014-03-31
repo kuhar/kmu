@@ -96,6 +96,18 @@ namespace kmu
 			return *this;
 		}
 
+		Variant( Variant<Ts...>&& other )
+			: m_currentTypeID( UninitializedType )
+		{
+			Visitor<StorageType, Ts...>::moveInitialize( *this, std::move( other ) );
+		}
+
+		Variant<Ts...>& operator= ( Variant<Ts...>&& other )
+		{
+			Visitor<StorageType, Ts...>::moveInitialize( *this, std::move( other ) );
+			return *this;
+		}
+
 		template<typename Type>
 		void set()
 		{
@@ -214,6 +226,17 @@ namespace kmu
 				}
 				Visitor<StorageType, Rest...>::copyInitialize( current, other );
 			}
+
+			template<typename VariantType>
+			static void moveInitialize( VariantType& current, VariantType&& other )
+			{
+				if( other.m_currentTypeID == typeid( First ) )
+				{
+					current.set<First>( std::forward<First>( other.get<First>() ) );
+					return;
+				}
+				Visitor<StorageType, Rest...>::moveInitialize( current, std::move( other ) );
+			}
 		};
 
 		template<typename StorageType>
@@ -228,6 +251,14 @@ namespace kmu
 			static void copyInitialize( VariantType& current, const VariantType& other )
 			{
 				assert( other.m_currentTypeID == typeid ( impl::Uninitialized ) 
+						&& "Type mismatch" );
+				current.reset();
+			}
+
+			template<typename VariantType>
+			static void moveInitialize( VariantType& current, VariantType&& other )
+			{
+				assert( other.m_currentTypeID == typeid ( impl::Uninitialized )
 						&& "Type mismatch" );
 				current.reset();
 			}

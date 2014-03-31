@@ -78,6 +78,7 @@ int main()
 	cout << original.get<1>().id << endl;
 	::get<1>( original ).id = 12;
 	cout << original.get<someClass>().id << endl;
+	original.set<someClass>( someClass() );
 
 	return 0;
 }
