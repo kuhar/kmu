@@ -11,10 +11,26 @@ using namespace kmu;
 
 struct someClass
 {
+	someClass()
+	{
+	}
+	
 	~someClass()
 	{
-		cout << "\nAnihilation\n";
+		cout << "Anihilation:\t" << id << endl;
 	}
+
+	someClass( someClass&& )
+	{
+		cout << "move ctor\n";
+	}
+
+	someClass( const someClass& )
+	{
+		cout << "copy ctor\n";
+	}
+
+	int id = 0;
 };
 
 int main()
@@ -38,7 +54,6 @@ int main()
 	stringIntVariant.set<someClass>();
 	stringIntVariant.reset();
 
-
 	Variant<int, std::reference_wrapper<int>> test;
 	test.set<int>( 5 );
 	int a = 6;
@@ -48,13 +63,21 @@ int main()
 	cout << endl << a;
 	cout << get<std::reference_wrapper<int>>( test ) << sizeof( std::ref(b) );
 
-
 	Variant<int, int&, const int&> referenceTest;
 	referenceTest.set<int&>( b );
 	referenceTest.get<int&>() = 8;
 	cout << get<int&>( referenceTest ) << endl;
 	referenceTest.set<const int&>( a );
 	cout << get<const int&>( referenceTest ) << endl;
+
+	Variant<nullptr_t, someClass>original;
+	original.set<someClass>();
+	auto copyTest = original;
+	copyTest.get<someClass>().id = 3;
+	original = decltype( original )( copyTest );
+	cout << original.get<1>().id << endl;
+	::get<1>( original ).id = 12;
+	cout << original.get<someClass>().id << endl;
 
 	return 0;
 }
