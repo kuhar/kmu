@@ -23,8 +23,10 @@ namespace kmu
 	namespace impl
 	{
 		template<typename T>
-		struct wrapReference
+		struct wrap_reference
 		{
+			static_assert ( !std::is_rvalue_reference<T>::value, 
+							"kmu::Varaint is not ready for rvalue references yet" );
 			using type = typename std::conditional<std::is_reference<T>::value,
 				typename std::reference_wrapper<typename std::remove_reference<T>::type>, T>::type;
 		};
@@ -32,7 +34,7 @@ namespace kmu
 		template<typename First, typename... Rest>
 		struct maxSizeof
 		{
-			using FirstType = typename wrapReference<First>::type;
+			using FirstType = typename wrap_reference<First>::type;
 			enum : size_t
 			{
 				value = sizeof( FirstType ) > maxSizeof<Rest...>::value
@@ -46,7 +48,7 @@ namespace kmu
 		{
 			enum : size_t
 			{
-				value = sizeof( typename wrapReference<First>::type )
+				value = sizeof( typename wrap_reference<First>::type )
 			};
 		};
 		
@@ -89,7 +91,7 @@ namespace kmu
 			Destroyer<StorageType, Ts...>::destroy( m_storage, m_currentTypeID );
 			m_currentTypeID = typeid( Type );
 
-			using wrappedType = typename impl::wrapReference<Type>::type;
+			using wrappedType = typename impl::wrap_reference<Type>::type;
 			new ( std::addressof( m_storage ) ) wrappedType();
 		}
 
@@ -102,7 +104,7 @@ namespace kmu
 			Destroyer<StorageType, Ts...>::destroy( m_storage, m_currentTypeID );
 			m_currentTypeID = typeid( Type );
 
-			using wrappedType = typename impl::wrapReference<Type>::type;
+			using wrappedType = typename impl::wrap_reference<Type>::type;
 			new ( std::addressof( m_storage ) ) wrappedType( std::forward<Args>( params )... );
 		}
 
@@ -115,7 +117,7 @@ namespace kmu
 			Destroyer<StorageType, Ts...>::destroy( m_storage, m_currentTypeID );
 			m_currentTypeID = typeid( Type );
 
-			using wrappedType = typename impl::wrapReference<Type>::type;
+			using wrappedType = typename impl::wrap_reference<Type>::type;
 			new ( std::addressof( m_storage ) ) wrappedType( params... );
 		}
 
@@ -127,7 +129,7 @@ namespace kmu
 			
 			assert( m_currentTypeID == typeid( Type ) && "Type mismatch" );
 
-			using wrappedType = typename impl::wrapReference<Type>::type;
+			using wrappedType = typename impl::wrap_reference<Type>::type;
 			return *reinterpret_cast<wrappedType*>( std::addressof( m_storage ) );
 		}
 
@@ -139,7 +141,7 @@ namespace kmu
 			
 			assert( m_currentTypeID == typeid( Type ) && "Type mismatch" );
 			
-			using wrappedType = typename impl::wrapReference<Type>::type;
+			using wrappedType = typename impl::wrap_reference<Type>::type;
 			return *reinterpret_cast<wrappedType*>( std::addressof( m_storage ) );
 		}
 
@@ -171,7 +173,7 @@ namespace kmu
 			{
 				if( currentTypeID == typeid( First ) )
 				{
-					using wrappedType = typename impl::wrapReference<First>::type;
+					using wrappedType = typename impl::wrap_reference<First>::type;
 					reinterpret_cast<wrappedType*> ( std::addressof( storage ) )->~wrappedType();
 					currentTypeID = typeid( impl::Uninitialized );
 					return;
