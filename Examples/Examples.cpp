@@ -46,7 +46,15 @@ int main()
 	int& b = test.get<std::reference_wrapper<int>>();
 	b = 7;
 	cout << endl << a;
-	cout << get<std::reference_wrapper<int>>( test );
+	cout << get<std::reference_wrapper<int>>( test ) << sizeof( std::ref(b) );
+
+
+	Variant<int, int&, const int&> referenceTest;
+	referenceTest.set<int&>( b );
+	referenceTest.get<int&>() = 8;
+	cout << get<int&>( referenceTest ) << endl;
+	referenceTest.set<const int&>( a );
+	cout << get<const int&>( referenceTest ) << endl;
 
 	return 0;
 }
