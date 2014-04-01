@@ -181,7 +181,7 @@ namespace kmu
 		}
 
 		template<size_t Index,
-			typename Type = typename std::tuple_element<Index, std::tuple<Ts...>>::type>
+				typename Type = typename std::tuple_element<Index, std::tuple<Ts...>>::type>
 		auto get() const -> decltype( get<Type>() )
 		{
 				return get<Type>();
@@ -288,16 +288,16 @@ namespace kmu
 
 	template<size_t Index, typename... Ts>
 	auto get( kmu::Variant<Ts...>& variant )
-		-> decltype ( variant.get<Index>() )
+		-> decltype ( variant.template get<Index>() )
 	{
-		return variant.get<Index>();
+		return variant.template get<Index>();
 	}
 
 	template<size_t Index, typename... Ts>
 	auto get( const kmu::Variant<Ts...>& variant )
-		-> decltype ( variant.get<Index>() )
+		-> decltype ( variant.template get<Index>() )
 	{
-		return variant.get<Index>();
+		return variant.template get<Index>();
 	}
 
 } // namespace kmu

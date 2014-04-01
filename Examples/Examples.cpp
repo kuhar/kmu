@@ -31,6 +31,11 @@ struct someClass
 	}
 
 	int id = 0;
+
+	struct animus 
+	{
+		int wtw = 3;
+	};
 };
 
 int main()
@@ -82,6 +87,7 @@ int main()
 	auto moveTest = std::move( original );
 	cout << sizeof( moveTest ) << endl;
 	cout << sizeof( moveTest.getCurrentTypeID() ) << endl;
+	cout << sizeof ( someClass ) << endl;
 	
 	return 0;
 }
