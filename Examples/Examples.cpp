@@ -80,6 +80,8 @@ int main()
 	cout << original.get<someClass>().id << endl;
 	original.set<someClass>( someClass() );
 	auto moveTest = std::move( original );
-
+	cout << sizeof( moveTest ) << endl;
+	cout << sizeof( moveTest.getCurrentTypeID() ) << endl;
+	
 	return 0;
 }

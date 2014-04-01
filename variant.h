@@ -200,7 +200,7 @@ namespace kmu
 
 	private:		
 		using StorageType = typename 
-			std::aligned_storage<impl::maxSizeof<Ts...>::value>::type;
+			std::aligned_storage<impl::maxSizeof<Ts...>::value, sizeof( std::type_index )>::type;
 		
 		StorageType m_storage;
 		std::type_index m_currentTypeID;
@@ -217,7 +217,7 @@ namespace kmu
 				{
 					using wrappedType = typename impl::wrap_reference<First>::type;
 					reinterpret_cast<wrappedType*> ( std::addressof( storage ) )->~wrappedType();
-					currentTypeID = typeid( impl::Uninitialized );
+					currentTypeID = typeid( Variant::UninitializedType );
 					return;
 				}
 				Visitor<StorageType, Rest...>::destroy( storage, currentTypeID );
@@ -226,9 +226,9 @@ namespace kmu
 			template<typename VariantType>
 			static void copyInitialize( VariantType& current, const VariantType& other )
 			{
-				if( other.m_currentTypeID == typeid( First ) )
+				if( other.getCurrentTypeID() == typeid( First ) )
 				{
-					current.set<First>( ( const First& ) other.get<First>() );
+					current.set<First>( other.get<First>() );
 					return;
 				}
 				Visitor<StorageType, Rest...>::copyInitialize( current, other );
@@ -237,7 +237,7 @@ namespace kmu
 			template<typename VariantType>
 			static void moveInitialize( VariantType& current, VariantType&& other )
 			{
-				if( other.m_currentTypeID == typeid( First ) )
+				if( other.getCurrentTypeID() == typeid( First ) )
 				{
 					current.set<First>( std::forward<First>( other.get<First>() ) );
 					return;
@@ -251,13 +251,13 @@ namespace kmu
 		{
 			static void destroy ( StorageType&, std::type_index& currentTypeID )
 			{
-				assert( currentTypeID == typeid( impl::Uninitialized ) && "Type mismatch" );
+				assert( currentTypeID == typeid( Variant::UninitializedType ) && "Type mismatch" );
 			}
 			
 			template<typename VariantType>
 			static void copyInitialize( VariantType& current, const VariantType& other )
 			{
-				assert( other.m_currentTypeID == typeid ( impl::Uninitialized ) 
+				assert( other.getCurrentTypeID() == typeid ( VariantType::UninitializedType ) 
 						&& "Type mismatch" );
 				current.reset();
 			}
@@ -265,12 +265,11 @@ namespace kmu
 			template<typename VariantType>
 			static void moveInitialize( VariantType& current, VariantType&& other )
 			{
-				assert( other.m_currentTypeID == typeid ( impl::Uninitialized )
+				assert( other.getCurrentTypeID() == typeid ( VariantType::UninitializedType )
 						&& "Type mismatch" );
 				current.reset();
 			}
 		};
-
 	};
 
 	template<typename Type, typename... Ts>
