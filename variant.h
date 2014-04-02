@@ -217,7 +217,7 @@ namespace kmu
 				{
 					using wrappedType = typename impl::wrap_reference<First>::type;
 					reinterpret_cast<wrappedType*> ( std::addressof( storage ) )->~wrappedType();
-					currentTypeID = typeid( Variant::UninitializedType );
+					currentTypeID = typeid( typename Variant::UninitializedType );
 					return;
 				}
 				Visitor<StorageType, Rest...>::destroy( storage, currentTypeID );
@@ -228,7 +228,7 @@ namespace kmu
 			{
 				if( other.getCurrentTypeID() == typeid( First ) )
 				{
-					current.set<First>( other.get<First>() );
+					current.set<First>( other.template get<First>() );
 					return;
 				}
 				Visitor<StorageType, Rest...>::copyInitialize( current, other );
@@ -239,7 +239,7 @@ namespace kmu
 			{
 				if( other.getCurrentTypeID() == typeid( First ) )
 				{
-					current.set<First>( std::forward<First>( other.get<First>() ) );
+					current.set<First>( std::forward<First>( other.template get<First>() ) );
 					return;
 				}
 				Visitor<StorageType, Rest...>::moveInitialize( current, std::move( other ) );
@@ -251,13 +251,14 @@ namespace kmu
 		{
 			static void destroy ( StorageType&, std::type_index& currentTypeID )
 			{
-				assert( currentTypeID == typeid( Variant::UninitializedType ) && "Type mismatch" );
+				assert( currentTypeID == typeid( typename Variant::UninitializedType ) 
+						&& "Type mismatch" );
 			}
 			
 			template<typename VariantType>
 			static void copyInitialize( VariantType& current, const VariantType& other )
 			{
-				assert( other.getCurrentTypeID() == typeid ( VariantType::UninitializedType ) 
+				assert( other.getCurrentTypeID() == typeid ( typename VariantType::UninitializedType ) 
 						&& "Type mismatch" );
 				current.reset();
 			}
