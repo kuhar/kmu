@@ -251,7 +251,7 @@ namespace kmu
 		{
 			static void destroy ( StorageType&, std::type_index& currentTypeID )
 			{
-				assert( currentTypeID == typeid( typename Variant::UninitializedType ) 
+				assert( currentTypeID == typeid( impl::Uninitialized ) 
 						&& "Type mismatch" );
 			}
 			

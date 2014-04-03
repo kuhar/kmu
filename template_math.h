@@ -79,6 +79,21 @@ namespace kmu
 	};
 
 	template<int FirstValue, int SecondValue>
+	struct distance
+	{
+		enum : int
+		{
+			value = ( FirstValue - SecondValue ) < 0 ?
+			-( FirstValue - SecondValue ) : ( FirstValue - SecondValue )
+		};
+	};
+
+	template<int Value>
+	struct absolute_value : distance<Value, 0>
+	{
+	};
+
+	template<int FirstValue, int SecondValue>
 	struct divide_and_round_values
 	{
 		static_assert( SecondValue != 0, "Division by 0" );
@@ -99,21 +114,6 @@ namespace kmu
 		{
 			value =  ( ( 2 * FirstValue / SecondValue ) + x_additional ) / 2
 		};
-	};
-
-	template<int FirstValue, int SecondValue>
-	struct distance
-	{
-		enum : int
-		{
-			value = ( FirstValue - SecondValue ) < 0 ?
-			-( FirstValue - SecondValue ) : ( FirstValue - SecondValue )
-		};
-	};
-
-	template<int Value>
-	struct absolute_value : distance<Value, 0>
-	{
 	};
 
 	template<int FirstValue, int SecondValue>
