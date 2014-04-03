@@ -13,7 +13,6 @@
 
 namespace kmu
 {
-
 	template<typename Type, Type... Index>
 	struct integer_sequence
 	{
@@ -24,7 +23,6 @@ namespace kmu
 
 	namespace impl
 	{
-
 		template<typename Type, typename Number, typename ReturnType>
 		struct x_make_integer_sequence_helper;
 
@@ -40,7 +38,6 @@ namespace kmu
 			typename ReturnType::template prepend<Number::value - 1>>
 		{
 		};
-
 	} // namespace impl
 
 	template<typename Type, Type Number>
@@ -58,7 +55,6 @@ namespace kmu
 
 	namespace impl
 	{
-
 		static_assert( std::is_same<make_integer_sequence<int, 0>,
 					   integer_sequence<int>>::value, "integer_sequence error" );
 		static_assert( std::is_same<make_integer_sequence<int, 1>,
@@ -67,7 +63,5 @@ namespace kmu
 					   integer_sequence<int, 0, 1>>::value, "integer_sequence error" );
 		static_assert( std::is_same<make_integer_sequence<int, 3>,
 					   integer_sequence<int, 0, 1, 2>>::value, "integer_sequence error" );
-
 	} // namespace impl
-
 } // namespace kmu

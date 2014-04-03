@@ -20,10 +20,8 @@
 
 namespace kmu
 {
-
 	namespace impl // Implementation
 	{
-
 		template<typename Signature> // GCC's implementation
 		class x_result_of;
 
@@ -33,6 +31,8 @@ namespace kmu
 			typedef decltype( std::declval<Functor>()( std::declval<ArgTypes>()... ) ) type;
 		};
 
+		template<typename T>
+		using x_result_of_t = typename x_result_of<T>::type;
 	} // namespace impl
 
 	template<typename First, typename... Rest>
@@ -41,29 +41,20 @@ namespace kmu
 	template<typename First, typename Second, typename... Rest>
 	struct is_one_of<First, Second, Rest...>
 	{
-		enum
-		{
-			value = std::is_same<First, Second>::value
-				? true : kmu::is_one_of<First, Rest...>::value
-		};
+		static const bool value = std::is_same<First, Second>::value
+				? true : kmu::is_one_of<First, Rest...>::value;
 	};
 
 	template<typename First, typename Second>
 	struct is_one_of<First, Second>
 	{
-		enum
-		{
-			value = std::is_same<First, Second>::value
-		};
+		static const bool value = std::is_same<First, Second>::value;
 	};
 
 	template<typename Only>
 	struct is_one_of<Only>
 	{
-		enum 
-		{
-			value = false
-		};
+		static const bool value = false;
 	};
 
 	template<typename First, typename... Rest>
@@ -72,20 +63,14 @@ namespace kmu
 	template<typename First, typename... Rest>
 	struct are_all_unique<First, Rest...>
 	{
-		enum
-		{
-			value = !kmu::is_one_of<First, Rest...>::value
-					&& kmu::are_all_unique<Rest...>::value
-		};
+		static const bool value = !kmu::is_one_of<First, Rest...>::value
+									&& kmu::are_all_unique<Rest...>::value;
 	};
 
 	template<typename Only>
 	struct are_all_unique<Only>
 	{
-		enum 
-		{
-			value = true
-		};
+		static const bool value = true;
 	};
 
 	template<typename T>
@@ -110,5 +95,4 @@ namespace kmu
 
 		return tab;
 	}
-
 } // namespace kmu

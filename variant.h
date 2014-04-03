@@ -20,7 +20,6 @@
 
 namespace kmu
 {
-
 	namespace impl
 	{
 		template<typename T>
@@ -32,26 +31,23 @@ namespace kmu
 			using type = typename std::conditional<std::is_lvalue_reference<T>::value,
 				typename std::reference_wrapper<typename std::remove_reference<T>::type>, T>::type;
 		};
+
+		template<typename T>
+		using wrap_reference_t = typename wrap_reference<T>::type;
 		
 		template<typename First, typename... Rest>
 		struct maxSizeof
 		{
 			using FirstType = typename wrap_reference<First>::type;
-			enum : size_t
-			{
-				value = sizeof( FirstType ) > maxSizeof<Rest...>::value
-						? sizeof( FirstType ) : maxSizeof<Rest...>::value
-			};
-			
+
+			static const size_t value = sizeof( FirstType ) > maxSizeof<Rest...>::value
+						? sizeof( FirstType ) : maxSizeof<Rest...>::value;
 		};
 
 		template<typename First>
 		struct maxSizeof<First>
 		{
-			enum : size_t
-			{
-				value = sizeof( typename wrap_reference<First>::type )
-			};
+			static const size_t value = sizeof( typename wrap_reference<First>::type );
 		};
 		
 		struct Uninitialized
@@ -71,7 +67,6 @@ namespace kmu
 		static_assert( kmu::are_all_unique<Ts...>::value, "Each and every type must be unique" );
 
 	public:
-
 		using UninitializedType = impl::Uninitialized;
 
 		Variant()
@@ -117,7 +112,7 @@ namespace kmu
 			Visitor<StorageType, Ts...>::destroy( m_storage, m_currentTypeID );
 			m_currentTypeID = typeid( Type );
 
-			using wrappedType = typename impl::wrap_reference<Type>::type;
+			using wrappedType = typename impl::wrap_reference_t<Type>;
 			new ( std::addressof( m_storage ) ) wrappedType();
 		}
 
@@ -130,7 +125,7 @@ namespace kmu
 			Visitor<StorageType, Ts...>::destroy( m_storage, m_currentTypeID );
 			m_currentTypeID = typeid( Type );
 
-			using wrappedType = typename impl::wrap_reference<Type>::type;
+			using wrappedType = typename impl::wrap_reference_t<Type>;
 			new ( std::addressof( m_storage ) ) wrappedType( std::forward<Args>( params )... );
 		}
 
@@ -143,7 +138,7 @@ namespace kmu
 			Visitor<StorageType, Ts...>::destroy( m_storage, m_currentTypeID );
 			m_currentTypeID = typeid( Type );
 
-			using wrappedType = typename impl::wrap_reference<Type>::type;
+			using wrappedType = typename impl::wrap_reference_t<Type>;
 			new ( std::addressof( m_storage ) ) wrappedType( params... );
 		}
 
@@ -155,7 +150,7 @@ namespace kmu
 			
 			assert( m_currentTypeID == typeid( Type ) && "Type mismatch" );
 
-			using wrappedType = typename impl::wrap_reference<Type>::type;
+			using wrappedType = typename impl::wrap_reference_t<Type>;
 
 			return *reinterpret_cast<wrappedType*>( std::addressof( m_storage ) );
 		}
@@ -168,7 +163,7 @@ namespace kmu
 			
 			assert( m_currentTypeID == typeid( Type ) && "Type mismatch" );
 			
-			using wrappedType = typename impl::wrap_reference<Type>::type;
+			using wrappedType = typename impl::wrap_reference_t<Type>;
 
 			return *reinterpret_cast<const wrappedType*>( std::addressof( m_storage ) );
 		}
@@ -215,7 +210,7 @@ namespace kmu
 			{
 				if( currentTypeID == typeid( First ) )
 				{
-					using wrappedType = typename impl::wrap_reference<First>::type;
+					using wrappedType = typename impl::wrap_reference_t<First>;
 					reinterpret_cast<wrappedType*> ( std::addressof( storage ) )->~wrappedType();
 					currentTypeID = typeid( typename Variant::UninitializedType );
 					return;
@@ -274,31 +269,30 @@ namespace kmu
 	};
 
 	template<typename Type, typename... Ts>
-	auto get( kmu::Variant<Ts...>& variant )
+	inline auto get( kmu::Variant<Ts...>& variant )
 		-> decltype ( variant.template get<Type>() )
 	{
 		return variant.template get<Type>();
 	}
 
 	template<typename Type, typename... Ts>
-	auto get( const kmu::Variant<Ts...>& variant )
+	inline auto get( const kmu::Variant<Ts...>& variant )
 		-> decltype ( variant.template get<Type>() )
 	{
 		return variant.template get<Type>();
 	}
 
 	template<size_t Index, typename... Ts>
-	auto get( kmu::Variant<Ts...>& variant )
+	inline auto get( kmu::Variant<Ts...>& variant )
 		-> decltype ( variant.template get<Index>() )
 	{
 		return variant.template get<Index>();
 	}
 
 	template<size_t Index, typename... Ts>
-	auto get( const kmu::Variant<Ts...>& variant )
+	inline auto get( const kmu::Variant<Ts...>& variant )
 		-> decltype ( variant.template get<Index>() )
 	{
 		return variant.template get<Index>();
 	}
-
 } // namespace kmu
