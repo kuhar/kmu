@@ -49,8 +49,24 @@ namespace kmu
 		{
 			static const size_t value = sizeof( typename wrap_reference<First>::type );
 		};
+
+		template<typename First, typename... Rest>
+		struct maxAlignof
+		{
+			using FirstType = typename wrap_reference<First>::type;
+
+			static const size_t value = std::alignment_of<FirstType>::value 
+										> maxAlignof<Rest...>::value
+				? std::alignment_of<FirstType>::value : maxAlignof<Rest...>::value;
+		};
+
+		template<typename First>
+		struct maxAlignof<First>
+		{
+			static const size_t value = std::alignment_of<wrap_reference<First>::type>::value;
+		};
 		
-		struct Uninitialized
+		struct Uninitialized final
 		{
 			Uninitialized() = delete;
 			~Uninitialized() = delete;
@@ -195,7 +211,8 @@ namespace kmu
 
 	private:		
 		using StorageType = typename 
-			std::aligned_storage<impl::maxSizeof<Ts...>::value, sizeof( std::type_index )>::type;
+			std::aligned_storage<impl::maxSizeof<Ts...>::value, 
+									impl::maxAlignof<Ts...>::value>::type;
 		
 		StorageType m_storage;
 		std::type_index m_currentTypeID;
