@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30324.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "kmu", "kmu.vcxproj", "{050B748D-B52C-4971-B071-74D16E85AAF6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Examples", "..\Examples\Examples.vcxproj", "{EC1D51C7-0472-4525-A071-72CC61260BA8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{050B748D-B52C-4971-B071-74D16E85AAF6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{050B748D-B52C-4971-B071-74D16E85AAF6}.Debug|Win32.Build.0 = Debug|Win32
+		{050B748D-B52C-4971-B071-74D16E85AAF6}.Release|Win32.ActiveCfg = Release|Win32
+		{050B748D-B52C-4971-B071-74D16E85AAF6}.Release|Win32.Build.0 = Release|Win32
+		{EC1D51C7-0472-4525-A071-72CC61260BA8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EC1D51C7-0472-4525-A071-72CC61260BA8}.Debug|Win32.Build.0 = Debug|Win32
+		{EC1D51C7-0472-4525-A071-72CC61260BA8}.Release|Win32.ActiveCfg = Release|Win32
+		{EC1D51C7-0472-4525-A071-72CC61260BA8}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
