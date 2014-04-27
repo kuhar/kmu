@@ -63,7 +63,7 @@ namespace kmu
 		template<typename First>
 		struct maxAlignof<First>
 		{
-			static const size_t value = std::alignment_of<wrap_reference<First>::type>::value;
+			static const size_t value = std::alignment_of<typename wrap_reference<First>::type>::value;
 		};
 		
 		struct Uninitialized final
@@ -145,19 +145,6 @@ namespace kmu
 			new ( std::addressof( m_storage ) ) wrappedType( std::forward<Args>( params )... );
 		}
 
-		template<typename Type, typename... Args>
-		void set( const Args&... params )
-		{
-			static_assert( kmu::is_one_of<Type, Ts...>::value,
-						   "Given type is not a subtype of this variant" );
-			
-			Visitor<StorageType, Ts...>::destroy( m_storage, m_currentTypeID );
-			m_currentTypeID = typeid( Type );
-
-			using wrappedType = typename impl::wrap_reference_t<Type>;
-			new ( std::addressof( m_storage ) ) wrappedType( params... );
-		}
-
 		template<typename Type>
 		Type& get()
 		{
@@ -186,14 +173,14 @@ namespace kmu
 
 		template<size_t Index, 
 				typename Type = typename std::tuple_element<Index, std::tuple<Ts...>>::type>
-		auto get() -> decltype( get<Type>() )
+		auto get() -> decltype( this->template get<Type>() )
 		{
 			return get<Type>();
 		}
 
 		template<size_t Index,
 				typename Type = typename std::tuple_element<Index, std::tuple<Ts...>>::type>
-		auto get() const -> decltype( get<Type>() )
+		auto get() const -> decltype( this->template get<Type>() )
 		{
 				return get<Type>();
 		}
@@ -278,7 +265,7 @@ namespace kmu
 			template<typename VariantType>
 			static void moveInitialize( VariantType& current, VariantType&& other )
 			{
-				assert( other.getCurrentTypeID() == typeid ( VariantType::UninitializedType )
+				assert( other.getCurrentTypeID() == typeid ( typename VariantType::UninitializedType )
 						&& "Type mismatch" );
 				current.reset();
 			}

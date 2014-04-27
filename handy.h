@@ -57,7 +57,7 @@ namespace kmu
 		static const bool value = false;
 	};
 
-	template<typename First, typename... Rest>
+	template<typename... Args>
 	struct are_all_unique;
 
 	template<typename First, typename... Rest>

@@ -99,29 +99,29 @@ namespace kmu
 	template<bool FirstValue, bool SecondValue>
 	struct logical_operator
 	{
-		static const bool or = FirstValue || SecondValue;
-		static const bool nor = !FirstValue || !SecondValue;
-		static const bool xor = FirstValue != SecondValue;
-		static const bool xnor = !xor;
+		static const bool logical_or = FirstValue || SecondValue;
+		static const bool logical_nor = !FirstValue || !SecondValue;
+		static const bool logical_xor = FirstValue != SecondValue;
+		static const bool logical_xnor = !logical_xor;
 
-		static const bool and = FirstValue && SecondValue;
-		static const bool nand = !FirstValue && !SecondValue;
+		static const bool logical_and = FirstValue && SecondValue;
+		static const bool logical_nand = !FirstValue && !SecondValue;
 
-		static const bool eql = !xor;
+		static const bool logical_eql = !logical_xor;
 	};
 
 	template<int FirstValue, int SecondValue>
 	struct bitwise_operator
 	{
-		static const int or = FirstValue | SecondValue;
-		static const int xor = FirstValue ^ SecondValue;
+		static const int bitwise_or = FirstValue | SecondValue;
+		static const int bitwise_xor = FirstValue ^ SecondValue;
 
-		static const int and = FirstValue & SecondValue;
+		static const int bitwise_and = FirstValue & SecondValue;
 
-		static const int eql = ~xor;
+		static const int bitwise_eql = ~bitwise_xor;
 
-		static const int shift_left = FirstValue << SecondValue;
-		static const int shift_right = FirstValue >> SecondValue;
+		static const int bitwise_shift_left = FirstValue << SecondValue;
+		static const int bitwise_shift_right = FirstValue >> SecondValue;
 	};
 
 } // namespace kmu

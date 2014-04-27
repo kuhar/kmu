@@ -39,10 +39,10 @@ namespace kmu
 	auto explode( Functor&& functor, Tuple&& tupleOfArgs )
 		-> decltype( impl::x_explode_helper( std::forward<Functor>( functor ), 
 		std::forward<Tuple>( tupleOfArgs ),
-	make_index_sequence<std::tuple_size<typename std::decay_t<Tuple>>::value>() ) )
+	make_index_sequence<std::tuple_size<typename std::decay<Tuple>::type>::value>() ) )
 	{
 		return impl::x_explode_helper( std::forward<Functor>( functor ), 
 			std::forward<Tuple>( tupleOfArgs ),
-			make_index_sequence<std::tuple_size<typename std::decay_t<Tuple>>::value>() );
+			make_index_sequence<std::tuple_size<typename std::decay<Tuple>::type>::value>() );
 	}
 } // namespace kmu
