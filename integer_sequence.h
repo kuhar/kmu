@@ -20,7 +20,6 @@ namespace kmu
 		using prepend = integer_sequence<Type, Number, Index...>;
 	};
 
-
 	namespace impl
 	{
 		template<typename Type, typename Number, typename ReturnType>

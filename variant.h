@@ -18,6 +18,12 @@
 
 #include "handy.h"
 
+#ifdef _MSC_VER
+#define KMU_THIS_TEMPLATED_METHOD
+#else
+#define KMU_THIS_TEMPLATED_METHOD this->template
+#endif
+
 namespace kmu
 {
 	namespace impl
@@ -173,14 +179,14 @@ namespace kmu
 
 		template<size_t Index, 
 				typename Type = typename std::tuple_element<Index, std::tuple<Ts...>>::type>
-		auto get() -> decltype( this->template get<Type>() )
+		auto get() -> decltype( KMU_THIS_TEMPLATED_METHOD get<Type>() )
 		{
 			return get<Type>();
 		}
 
 		template<size_t Index,
 				typename Type = typename std::tuple_element<Index, std::tuple<Ts...>>::type>
-		auto get() const -> decltype( this->template get<Type>() )
+		auto get() const -> decltype( KMU_THIS_TEMPLATED_METHOD get<Type>() )
 		{
 				return get<Type>();
 		}
@@ -300,3 +306,5 @@ namespace kmu
 		return variant.template get<Index>();
 	}
 } // namespace kmu
+
+#undef KMU_THIS_TEMPLATED_METHOD
