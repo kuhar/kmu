@@ -40,7 +40,7 @@ struct someClass
 
 int main()
 {
-	//explode( []( int ){ cout << "Wazzza?"; }, make_tuple( 1 ) );
+	explode( []( int ){ cout << "Wazzza?"; }, make_tuple( 1 ) );
 	Variant<int, char, vector<int>> myVariant;
 	myVariant.set<int>( 5 );
 	cout << myVariant.get<int>();
