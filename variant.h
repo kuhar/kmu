@@ -227,7 +227,7 @@ namespace kmu
 			{
 				if( other.getCurrentTypeID() == typeid( First ) )
 				{
-					current.set<First>( other.template get<First>() );
+					current.template set<First>( other.template get<First>() );
 					return;
 				}
 				Visitor<StorageType, Rest...>::copyInitialize( current, other );
@@ -238,7 +238,7 @@ namespace kmu
 			{
 				if( other.getCurrentTypeID() == typeid( First ) )
 				{
-					current.set<First>( std::forward<First>( other.template get<First>() ) );
+					current.template set<First>( std::forward<First>( other.template get<First>() ) );
 					return;
 				}
 				Visitor<StorageType, Rest...>::moveInitialize( current, std::move( other ) );

@@ -23,7 +23,7 @@ namespace kmu
 	namespace impl // Implementation
 	{
 		template<typename Signature> // GCC's implementation
-		class x_result_of;
+		struct x_result_of;
 
 		template<typename Functor, typename... ArgTypes>
 		struct x_result_of<Functor( ArgTypes... )>
