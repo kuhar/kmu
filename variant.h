@@ -104,38 +104,25 @@ namespace kmu
 		Variant( const Variant<Ts...>& other )
 			: m_currentTypeID( typeid( UninitializedType ) )
 		{
-			Visitor<StorageType, Ts...>::copyInitialize( *this, other );
+			Visitor<StorageType, Ts...>::initialize( *this, other );
 		}
 
 		Variant<Ts...>& operator= ( const Variant<Ts...>& other )
 		{
-			Visitor<StorageType, Ts...>::copyInitialize( *this, other );
+			Visitor<StorageType, Ts...>::initialize( *this, other );
 			return *this;
 		}
 
 		Variant( Variant<Ts...>&& other )
 			: m_currentTypeID( typeid( UninitializedType ) )
 		{
-			Visitor<StorageType, Ts...>::moveInitialize( *this, std::move( other ) );
+			Visitor<StorageType, Ts...>::initialize( *this, std::move( other ) );
 		}
 
 		Variant<Ts...>& operator= ( Variant<Ts...>&& other )
 		{
-			Visitor<StorageType, Ts...>::moveInitialize( *this, std::move( other ) );
+			Visitor<StorageType, Ts...>::initialize( *this, std::move( other ) );
 			return *this;
-		}
-
-		template<typename Type>
-		void set()
-		{
-			static_assert( kmu::is_one_of<Type, Ts...>::value,
-						   "Given type is not a subtype of this variant" );
-
-			Visitor<StorageType, Ts...>::destroy( m_storage, m_currentTypeID );
-			m_currentTypeID = typeid( Type );
-
-			using wrappedType = typename impl::wrap_reference_t<Type>;
-			new ( std::addressof( m_storage ) ) wrappedType();
 		}
 
 		template<typename Type, typename... Args>
@@ -228,26 +215,16 @@ namespace kmu
 				Visitor<StorageType, Rest...>::destroy( storage, currentTypeID );
 			}
 
-			template<typename VariantType>
-			static void copyInitialize( VariantType& current, const VariantType& other )
+			template<typename CurrentVariantType, typename OtherVariantType>
+			static void initialize( CurrentVariantType& current, OtherVariantType&& other )
 			{
 				if( other.getCurrentTypeID() == typeid( First ) )
 				{
 					current.template set<First>( other.template get<First>() );
 					return;
 				}
-				Visitor<StorageType, Rest...>::copyInitialize( current, other );
-			}
-
-			template<typename VariantType>
-			static void moveInitialize( VariantType& current, VariantType&& other )
-			{
-				if( other.getCurrentTypeID() == typeid( First ) )
-				{
-					current.template set<First>( std::forward<First>( other.template get<First>() ) );
-					return;
-				}
-				Visitor<StorageType, Rest...>::moveInitialize( current, std::move( other ) );
+				Visitor<StorageType, Rest...>::initialize( current, 
+														   std::forward<OtherVariantType>( other ) );
 			}
 		};
 
@@ -260,18 +237,11 @@ namespace kmu
 						&& "Type mismatch" );
 			}
 			
-			template<typename VariantType>
-			static void copyInitialize( VariantType& current, const VariantType& other )
+			template<typename CurrentVariantType, typename OtherVariantType>
+			static void initialize( CurrentVariantType& current, OtherVariantType&& other )
 			{
-				assert( other.getCurrentTypeID() == typeid ( typename VariantType::UninitializedType ) 
-						&& "Type mismatch" );
-				current.reset();
-			}
-
-			template<typename VariantType>
-			static void moveInitialize( VariantType& current, VariantType&& other )
-			{
-				assert( other.getCurrentTypeID() == typeid ( typename VariantType::UninitializedType )
+				assert( other.getCurrentTypeID() == typeid ( 
+							typename std::decay<CurrentVariantType>::type::UninitializedType )
 						&& "Type mismatch" );
 				current.reset();
 			}
