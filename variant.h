@@ -13,6 +13,7 @@
 #include <memory>
 #include <functional>
 #include <tuple>
+#include <limits>
 #include <cstddef>
 #include <cassert>
 
@@ -87,41 +88,44 @@ namespace kmu
 	class Variant
 	{
 		static_assert( kmu::are_all_unique<Ts...>::value, "Each and every type must be unique" );
+		static const unsigned char UninitializedIndex = UCHAR_MAX;
+		static_assert ( sizeof... ( Ts ) < static_cast<size_t>( UninitializedIndex ), 
+						"Given count of types exceeds the limit" );
 
 	public:
 		using UninitializedType = impl::Uninitialized;
 
 		Variant()
-			: m_currentTypeID( typeid( UninitializedType ) )
+			: m_currentIndexOfType( UninitializedIndex )
 		{
 		}
 
 		~Variant()
 		{
-			Visitor<StorageType, Ts...>::destroy( m_storage, m_currentTypeID );
+			Visitor<Ts...>::destroy( m_storage, m_currentIndexOfType );
 		}
 
 		Variant( const Variant<Ts...>& other )
-			: m_currentTypeID( typeid( UninitializedType ) )
+			: m_currentIndexOfType( UninitializedIndex )
 		{
-			Visitor<StorageType, Ts...>::initialize( *this, other );
+			Visitor<Ts...>::initialize( *this, other );
 		}
 
 		Variant<Ts...>& operator= ( const Variant<Ts...>& other )
 		{
-			Visitor<StorageType, Ts...>::initialize( *this, other );
+			Visitor<Ts...>::initialize( *this, other );
 			return *this;
 		}
 
 		Variant( Variant<Ts...>&& other )
-			: m_currentTypeID( typeid( UninitializedType ) )
+			: m_currentIndexOfType( UninitializedIndex )
 		{
-			Visitor<StorageType, Ts...>::initialize( *this, std::move( other ) );
+			Visitor<Ts...>::initialize( *this, std::move( other ) );
 		}
 
 		Variant<Ts...>& operator= ( Variant<Ts...>&& other )
 		{
-			Visitor<StorageType, Ts...>::initialize( *this, std::move( other ) );
+			Visitor<Ts...>::initialize( *this, std::move( other ) );
 			return *this;
 		}
 
@@ -131,48 +135,41 @@ namespace kmu
 			static_assert( kmu::is_one_of<Type, Ts...>::value,
 						   "Given type is not a subtype of this variant" );
 			
-			Visitor<StorageType, Ts...>::destroy( m_storage, m_currentTypeID );
-			m_currentTypeID = typeid( Type );
+			Visitor<Ts...>::destroy( m_storage, m_currentIndexOfType );
+			m_currentIndexOfType = kmu::get_index_of_type<Type, Ts...>::value;
 
 			using wrappedType = typename impl::wrap_reference_t<Type>;
 			new ( std::addressof( m_storage ) ) wrappedType( std::forward<Args>( params )... );
 		}
 
-		template<typename Type>
+		template<typename Type, size_t Index = kmu::get_index_of_type<Type, Ts...>::value>
 		Type& get()
-		{
-			static_assert( kmu::is_one_of<Type, Ts...>::value,
-						   "Given type is not a subtype of this variant" );
-			
-			assert( m_currentTypeID == typeid( Type ) && "Type mismatch" );
+		{			
+			assert( m_currentIndexOfType == Index && "Type mismatch" );
 
 			using wrappedType = typename impl::wrap_reference_t<Type>;
-
 			return *reinterpret_cast<wrappedType*>( std::addressof( m_storage ) );
 		}
 
 		template<typename Type>
 		const Type& get() const
 		{
-			static_assert( kmu::is_one_of<Type, Ts...>::value,
-						   "Given type is not a subtype of this variant" );
-			
-			assert( m_currentTypeID == typeid( Type ) && "Type mismatch" );
-			
-			using wrappedType = typename impl::wrap_reference_t<Type>;
+			assert( ( getCurrentTypeIndex() == typeid( Type ) ) && "Type mismatch" );
 
-			return *reinterpret_cast<const wrappedType*>( std::addressof( m_storage ) );
+			using wrappedType = typename impl::wrap_reference_t<Type>;
+			return *reinterpret_cast<typename std::add_const<wrappedType>::type*>(
+													std::addressof( m_storage ) );
 		}
 
 		template<size_t Index, 
-				typename Type = typename std::tuple_element<Index, std::tuple<Ts...>>::type>
+				typename Type = typename kmu::get_type_at_index_t<Index, Ts...>>
 		auto get() -> decltype( KMU_THIS_TEMPLATED_METHOD get<Type>() )
 		{
 			return get<Type>();
 		}
 
 		template<size_t Index,
-				typename Type = typename std::tuple_element<Index, std::tuple<Ts...>>::type>
+				typename Type = typename kmu::get_type_at_index_t<Index, Ts...>>
 		auto get() const -> decltype( KMU_THIS_TEMPLATED_METHOD get<Type>() )
 		{
 				return get<Type>();
@@ -180,69 +177,73 @@ namespace kmu
 
 		void reset()
 		{
-			Visitor<StorageType, Ts...>::destroy( m_storage, m_currentTypeID );
-			m_currentTypeID = typeid( UninitializedType );
+			Visitor<Ts...>::destroy( m_storage, m_currentIndexOfType );
+			m_currentIndexOfType = UninitializedIndex;
 		}
 
-		std::type_index getCurrentTypeID() const
+		std::type_index getCurrentTypeIndex() const
 		{
-			return m_currentTypeID;
+			assert( ( m_currentIndexOfType < sizeof... (Ts) 
+					|| m_currentIndexOfType == UninitializedIndex ) && "Type mismatch" );
+
+			if( m_currentIndexOfType == UninitializedIndex )
+			{
+				return typeid ( UninitializedType );
+			}
+
+			return kmu::getTypeIndexOfTypeAtIndex<Ts...>( m_currentIndexOfType );
 		}
 
 	private:		
-		using StorageType = typename 
-			std::aligned_storage<impl::maxSizeof<Ts...>::value, 
-									impl::maxAlignof<Ts...>::value>::type;
+		using StorageType = typename std::aligned_storage<impl::maxSizeof<Ts...>::value, 
+															impl::maxAlignof<Ts...>::value>::type;
 		
 		StorageType m_storage;
-		std::type_index m_currentTypeID;
+		unsigned char m_currentIndexOfType;
 
-		template<typename StorageType, typename...>
+		template<typename...>
 		struct Visitor;
 
-		template<typename StorageType, typename First, typename... Rest>
-		struct Visitor<StorageType, First, Rest...>
+		template<typename First, typename... Rest>
+		struct Visitor<First, Rest...>
 		{
-			static void destroy ( StorageType& storage, std::type_index& currentTypeID )
+			static void destroy ( StorageType& storage, unsigned char& currentIndex )
 			{
-				if( currentTypeID == typeid( First ) )
+				if( currentIndex == kmu::get_index_of_type<First, Ts...>::value )
 				{
 					using wrappedType = typename impl::wrap_reference_t<First>;
 					reinterpret_cast<wrappedType*> ( std::addressof( storage ) )->~wrappedType();
-					currentTypeID = typeid( typename Variant::UninitializedType );
+					currentIndex = UninitializedIndex;
+					
 					return;
 				}
-				Visitor<StorageType, Rest...>::destroy( storage, currentTypeID );
+				Visitor<Rest...>::destroy( storage, currentIndex );
 			}
 
 			template<typename CurrentVariantType, typename OtherVariantType>
 			static void initialize( CurrentVariantType& current, OtherVariantType&& other )
 			{
-				if( other.getCurrentTypeID() == typeid( First ) )
+				if( other.m_currentIndexOfType == kmu::get_index_of_type<First, Ts...>::value )
 				{
 					current.template set<First>( other.template get<First>() );
 					return;
 				}
-				Visitor<StorageType, Rest...>::initialize( current, 
-														   std::forward<OtherVariantType>( other ) );
+				Visitor<Rest...>::initialize( current, std::forward<OtherVariantType>( other ) );
 			}
 		};
 
-		template<typename StorageType>
-		struct Visitor<StorageType>
+		template<>
+		struct Visitor<>
 		{
-			static void destroy ( StorageType&, std::type_index& currentTypeID )
+			static void destroy ( StorageType&, unsigned char& currentIndex )
 			{
-				assert( currentTypeID == typeid( impl::Uninitialized ) 
-						&& "Type mismatch" );
+				assert( ( currentIndex == UninitializedIndex ) && "Type mismatch" );
 			}
 			
 			template<typename CurrentVariantType, typename OtherVariantType>
 			static void initialize( CurrentVariantType& current, OtherVariantType&& other )
 			{
-				assert( other.getCurrentTypeID() == typeid ( 
-							typename std::decay<CurrentVariantType>::type::UninitializedType )
-						&& "Type mismatch" );
+				assert( ( other.m_currentIndexOfType == UninitializedIndex ) && "Type mismatch" );
 				current.reset();
 			}
 		};

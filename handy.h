@@ -108,6 +108,9 @@ namespace kmu
 		using type = typename std::tuple_element<Index, tuple_type>::type;
 	};
 
+	template<size_t Index, typename... Ts>
+	using get_type_at_index_t = typename get_type_at_index<Index, Ts...>::type;
+
 	template<typename... Ts>
 	std::type_index getTypeIndexOfTypeAtIndex( size_t index )
 	{

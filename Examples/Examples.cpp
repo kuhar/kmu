@@ -49,7 +49,7 @@ int main()
 	myVariant.set<char>( 'Z' );
 	cout << myVariant.get<char>();
 	myVariant.set<vector<int>>( 3, 5 );
-	cout << myVariant.getCurrentTypeID().name();
+	cout << myVariant.getCurrentTypeIndex().name();
 
 	decltype( myVariant ) otherVariant = myVariant;
 	Variant<int, const char*, someClass> stringIntVariant;
@@ -86,7 +86,7 @@ int main()
 	original.set<someClass>( someClass() );
 	auto moveTest = std::move( original );
 	cout << sizeof( moveTest ) << endl;
-	cout << sizeof( moveTest.getCurrentTypeID() ) << endl;
+	cout << sizeof( moveTest.getCurrentTypeIndex() ) << endl;
 	cout << sizeof ( someClass ) << endl;
 
 	cout << type_index( 
