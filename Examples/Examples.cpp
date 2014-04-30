@@ -17,7 +17,7 @@ struct someClass
 	
 	~someClass()
 	{
-		cout << "Anihilation:\t" << id << endl;
+		cout << "Annihilation:\t" << id << endl;
 	}
 
 	someClass( someClass&& )
