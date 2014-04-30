@@ -88,6 +88,11 @@ int main()
 	cout << sizeof( moveTest ) << endl;
 	cout << sizeof( moveTest.getCurrentTypeID() ) << endl;
 	cout << sizeof ( someClass ) << endl;
-	
+
+	cout << type_index( 
+		typeid( kmu::get_type_at_index<3, int, char, bool, void, short>::type ) ).name() << "\n";
+	cout << kmu::get_index_of_type<void, bool, char, int, short, void, long>::value << "\n";
+	cout << kmu::get_index_of_type<void, bool, char, int, short, void>::value << "\n";
+
 	return 0;
 }

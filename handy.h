@@ -14,12 +14,20 @@
 #include <type_traits>
 #include <vector>
 #include <array>
+#include <tuple>
 #include <cassert>
 
 #include "template_math.h"
 
+
+
 namespace kmu
 {
+	struct Constants
+	{
+		static const size_t SIZE_T_MAX = -1;
+	};
+	
 	namespace impl // Implementation
 	{
 		template<typename Signature> // GCC's implementation
@@ -33,6 +41,23 @@ namespace kmu
 
 		template<typename T>
 		using x_result_of_t = typename x_result_of<T>::type;
+
+		template<size_t Index, typename Type, typename... Ts>
+		struct get_index_of_type_helper;
+
+		template<size_t Index, typename Type, typename First, typename... Rest>
+		struct get_index_of_type_helper<Index, Type, First, Rest... >
+		{
+			static const size_t value = std::is_same<Type, First>::value
+							? Index : get_index_of_type_helper<Index + 1, Type, Rest...>::value;
+		};
+
+		template<size_t Index, typename Type>
+		struct get_index_of_type_helper< Index, Type>
+		{
+			static const size_t value = Constants::SIZE_T_MAX;
+		};
+
 	} // namespace impl
 
 	template<typename First, typename... Rest>
@@ -73,10 +98,27 @@ namespace kmu
 		static const bool value = true;
 	};
 
+	template<size_t Index, typename... Ts>
+	struct get_type_at_index
+	{
+		static_assert( sizeof... ( Ts ) > 0, "The list of types cannot be empty" );
+	private:
+		using tuple_type = std::tuple<Ts...>;
+	public:
+		using type = typename std::tuple_element<Index, tuple_type>::type;
+	};
+
+	template<typename SearchedType, typename... Types>
+	struct get_index_of_type
+	{
+		static const size_t value = impl::get_index_of_type_helper<0, SearchedType, Types...>::value;
+		static_assert( value != Constants::SIZE_T_MAX, "Type not found" );
+	};
+
 	template<typename T>
 	std::vector<T> makeVectorOfElements( const T& element, size_t count = 1 )
 	{
-		return std::vector<T>( count, element );
+		return std::vector<T>{ count, element };
 	}
 
 	template<int From, int To,
