@@ -12,13 +12,13 @@
 #pragma once
 
 #include <type_traits>
+#include <typeindex>
 #include <vector>
 #include <array>
 #include <tuple>
 #include <cassert>
 
 #include "template_math.h"
-
 
 
 namespace kmu
@@ -107,6 +107,14 @@ namespace kmu
 	public:
 		using type = typename std::tuple_element<Index, tuple_type>::type;
 	};
+
+	template<typename... Ts>
+	std::type_index getTypeIndexOfTypeAtIndex( size_t index )
+	{
+		assert( index < sizeof... ( Ts ) && "Given index exceeds the number of types" );
+		static const std::type_index types[] = { typeid( Ts )... };
+		return types[index];
+	}
 
 	template<typename SearchedType, typename... Types>
 	struct get_index_of_type
