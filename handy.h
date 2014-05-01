@@ -26,6 +26,7 @@ namespace kmu
 	struct Constants
 	{
 		static const size_t SIZE_T_MAX = -1;
+		static const unsigned char UCHAR_MAX = -1;
 	};
 	
 	namespace impl // Implementation

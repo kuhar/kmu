@@ -88,7 +88,7 @@ namespace kmu
 	class Variant
 	{
 		static_assert( kmu::are_all_unique<Ts...>::value, "Each and every type must be unique" );
-		static const unsigned char UninitializedIndex = UCHAR_MAX;
+		static const unsigned char UninitializedIndex = Constants::UCHAR_MAX;
 		static_assert ( sizeof... ( Ts ) < static_cast<size_t>( UninitializedIndex ), 
 						"Given count of types exceeds the limit" );
 
@@ -102,30 +102,30 @@ namespace kmu
 
 		~Variant()
 		{
-			Visitor<Ts...>::destroy( m_storage, m_currentIndexOfType );
+			VisitorHelper<Ts...>::destroy( m_storage, m_currentIndexOfType );
 		}
 
 		Variant( const Variant<Ts...>& other )
 			: m_currentIndexOfType( UninitializedIndex )
 		{
-			Visitor<Ts...>::initialize( *this, other );
+			VisitorHelper<Ts...>::initialize( *this, other );
 		}
 
 		Variant<Ts...>& operator= ( const Variant<Ts...>& other )
 		{
-			Visitor<Ts...>::initialize( *this, other );
+			VisitorHelper<Ts...>::initialize( *this, other );
 			return *this;
 		}
 
 		Variant( Variant<Ts...>&& other )
 			: m_currentIndexOfType( UninitializedIndex )
 		{
-			Visitor<Ts...>::initialize( *this, std::move( other ) );
+			VisitorHelper<Ts...>::initialize( *this, std::move( other ) );
 		}
 
 		Variant<Ts...>& operator= ( Variant<Ts...>&& other )
 		{
-			Visitor<Ts...>::initialize( *this, std::move( other ) );
+			VisitorHelper<Ts...>::initialize( *this, std::move( other ) );
 			return *this;
 		}
 
@@ -135,7 +135,7 @@ namespace kmu
 			static_assert( kmu::is_one_of<Type, Ts...>::value,
 						   "Given type is not a subtype of this variant" );
 			
-			Visitor<Ts...>::destroy( m_storage, m_currentIndexOfType );
+			VisitorHelper<Ts...>::destroy( m_storage, m_currentIndexOfType );
 			m_currentIndexOfType = kmu::get_index_of_type<Type, Ts...>::value;
 
 			using wrappedType = typename impl::wrap_reference_t<Type>;
@@ -177,7 +177,7 @@ namespace kmu
 
 		void reset()
 		{
-			Visitor<Ts...>::destroy( m_storage, m_currentIndexOfType );
+			VisitorHelper<Ts...>::destroy( m_storage, m_currentIndexOfType );
 			m_currentIndexOfType = UninitializedIndex;
 		}
 
@@ -204,8 +204,12 @@ namespace kmu
 		template<typename...>
 		struct Visitor;
 
-		template<typename First, typename... Rest>
-		struct Visitor<First, Rest...>
+		using PlaceholderType = void; // To avoid explicit specialization of Visitor in this class
+		template<typename... Types>
+		using VisitorHelper = Visitor<PlaceholderType, Types...>;
+
+		template<typename Placeholder, typename First, typename... Rest>
+		struct Visitor<Placeholder, First, Rest...>
 		{
 			static void destroy ( StorageType& storage, unsigned char& currentIndex )
 			{
@@ -217,7 +221,7 @@ namespace kmu
 					
 					return;
 				}
-				Visitor<Rest...>::destroy( storage, currentIndex );
+				VisitorHelper<Rest...>::destroy( storage, currentIndex );
 			}
 
 			template<typename CurrentVariantType, typename OtherVariantType>
@@ -228,12 +232,12 @@ namespace kmu
 					current.template set<First>( other.template get<First>() );
 					return;
 				}
-				Visitor<Rest...>::initialize( current, std::forward<OtherVariantType>( other ) );
+				VisitorHelper<Rest...>::initialize( current, std::forward<OtherVariantType>( other ) );
 			}
 		};
 
-		template<>
-		struct Visitor<>
+		template<typename Placeholder>
+		struct Visitor<Placeholder>
 		{
 			static void destroy ( StorageType&, unsigned char& currentIndex )
 			{
