@@ -12,8 +12,6 @@
 #include <typeindex>
 #include <memory>
 #include <functional>
-#include <tuple>
-#include <limits>
 #include <cstddef>
 #include <cassert>
 
@@ -88,7 +86,7 @@ namespace kmu
 	class Variant
 	{
 		static_assert( kmu::are_all_unique<Ts...>::value, "Each and every type must be unique" );
-		static const unsigned char UninitializedIndex = Constants::UCHAR_MAX;
+		static const unsigned char UninitializedIndex = Constants::UChar_Max;
 		static_assert ( sizeof... ( Ts ) < static_cast<size_t>( UninitializedIndex ), 
 						"Given count of types exceeds the limit" );
 

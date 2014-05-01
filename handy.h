@@ -25,8 +25,8 @@ namespace kmu
 {
 	struct Constants
 	{
-		static const size_t SIZE_T_MAX = -1;
-		static const unsigned char UCHAR_MAX = -1;
+		static const size_t Size_T_Max = -1;
+		static const unsigned char UChar_Max = -1;
 	};
 	
 	namespace impl // Implementation
@@ -56,7 +56,7 @@ namespace kmu
 		template<size_t Index, typename Type>
 		struct get_index_of_type_helper< Index, Type>
 		{
-			static const size_t value = Constants::SIZE_T_MAX;
+			static const size_t value = Constants::Size_T_Max;
 		};
 
 	} // namespace impl
@@ -124,7 +124,7 @@ namespace kmu
 	struct get_index_of_type
 	{
 		static const size_t value = impl::get_index_of_type_helper<0, SearchedType, Types...>::value;
-		static_assert( value != Constants::SIZE_T_MAX, "Type not found" );
+		static_assert( value != Constants::Size_T_Max, "Type not found" );
 	};
 
 	template<typename T>
