@@ -30,6 +30,12 @@ namespace kmu
 		struct prepend : identity<type_list<Args..., Ts...>> {};
 	};
 
+	template<typename T>
+	struct is_type_list : std::false_type {};
+
+	template<typename... Ts>
+	struct is_type_list<type_list<Ts...>> : std::true_type {};
+
 	template<size_t index, typename T>
 	struct element_at : T::template at<index> {};
 

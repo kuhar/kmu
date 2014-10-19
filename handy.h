@@ -101,6 +101,9 @@ namespace kmu
 	template<bool value>
 	using bool_constant = if_t<value, std::true_type, std::false_type>;
 
+	template<size_t value>
+	using size_t_constant = std::integral_constant<size_t, value>;
+
 	template<typename First, typename... Rest>
 	struct is_one_of;
 

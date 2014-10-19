@@ -6,6 +6,7 @@
 #include "explode.h"
 #include "variant.h"
 #include "type_list.h"
+#include "algorithms.h"
 
 using namespace std;
 using namespace kmu;
@@ -108,5 +109,9 @@ int main()
 	//debugTellType(type_list<void, int, char, long>::append<string, char*>::type());
 	//debugTellType(prepend_t<type_list<void, int, char, long>, string, char*>());
 	//debugTellType(type_list_cat_t<first, first, first>());
+
+	cout << boolalpha << "\n" << kmu::none_of<std::is_const, const int, char>::value << "\n";
+	cout << kmu::any_of<std::is_const, const int, char>::value << "\n";
+	cout << kmu::count_if<std::is_const, const int, char, const string>::value << "\n";
 	return 0;
 }
