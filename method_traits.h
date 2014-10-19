@@ -16,50 +16,41 @@
 namespace kmu
 {
 
-	template<typename Signature>
-	struct is_const_method;
+	template<typename>
+	struct is_method_const;
 
-	template<typename ReturnType, typename Clazz, typename... Args>
-	struct is_const_method<ReturnType( Clazz::* ) ( Args... )>
-		: public std::false_type
-	{
-	};
+	template<typename ReturnType, typename Class, typename... Args>
+	struct is_method_const<ReturnType( Class::* ) ( Args... )> : std::false_type {};
 
-	template<typename ReturnType, typename Clazz, typename... Args>
-	struct is_const_method<ReturnType( Clazz::* ) ( Args... ) const>
-		: public std::true_type
-	{
-	};
+	template<typename ReturnType, typename Class, typename... Args>
+	struct is_method_const<ReturnType( Class::* ) ( Args... ) const> : std::true_type {};
 
-	template<typename Signature>
+	template<typename>
 	struct method_traits;
 
-	template<typename ReturnType, typename Clazz, typename... Args>
-	struct method_traits<ReturnType( Clazz::* ) ( Args... )>
+	template<typename ReturnType, typename Class, typename... Args>
+	struct method_traits<ReturnType( Class::* ) ( Args... )>
 	{
 		using return_type = ReturnType;
-		using class_name = Clazz;
+		using class_name = Class;
 		using is_const = std::false_type;
 		using is_functor = std::false_type;
 
-		enum : size_t
-		{
-			arity = sizeof... ( Args )
-		};
+		static const size_t arity = sizeof... ( Args );
 
 		template<size_t N>
 		struct argument
 		{
 			static_assert ( N < arity,
-							"Given index is greater than count of arguments" );
+							"Given index is greater than the number of arguments" );
 			using type = typename std::tuple_element<N, std::tuple<Args...>>::type;
 		};
 
 	};
 
-	template<typename ReturnType, typename Clazz, typename... Args>
-	struct method_traits<ReturnType( Clazz::* ) ( Args... ) const>
-		: public method_traits<ReturnType( Clazz::* ) ( Args... )>
+	template<typename ReturnType, typename Class, typename... Args>
+	struct method_traits<ReturnType( Class::* ) ( Args... ) const>
+		: method_traits<ReturnType( Class::* ) ( Args... )>
 	{
 		using is_const = std::true_type;
 	};
@@ -76,10 +67,7 @@ namespace kmu
 		using is_const = typename x_traits::is_const;
 		using is_functor = std::true_type;
 
-		enum : size_t
-		{
-			arity = x_traits::arity
-		};
+		static const size_t arity = x_traits::arity;
 
 		template<size_t N>
 		struct argument

@@ -13,7 +13,7 @@
 namespace kmu
 {
 
-	template<typename Signature>
+	template<typename>
 	struct function_traits;
 
 	template<typename ReturnType, typename... Args>
@@ -21,37 +21,36 @@ namespace kmu
 	{
 		using return_type = ReturnType;
 
-		enum : size_t
-		{
-			arity = sizeof... ( Args )
-		};
+		static const size_t	arity = sizeof... ( Args );
 
 		template <std::size_t N>
 		struct argument
 		{
 			static_assert ( N < arity,
-							"Given index is greater than count of arguments" );
+							"Given index is greater than the number of arguments" );
 			using type = typename std::tuple_element<N, std::tuple<Args...>>::type;
 		};
 	};
 
 	template<typename ReturnType, typename... Args>
 	struct function_traits<ReturnType(*)( Args... )>
-		: public function_traits<ReturnType( Args... )>
-	{
-	};
+		: function_traits<ReturnType( Args... )> {};
 
-	template<typename ReturnType, typename Clazz, typename... Args>
-	struct function_traits<ReturnType( Clazz::* )( Args... )>
-		: public function_traits<ReturnType( Clazz, Args... )>
-	{
-	};
+	template<typename ReturnType, typename Class, typename... Args>
+	struct function_traits<ReturnType( Class::* )( Args... )>
+		: function_traits<ReturnType( Class*, Args... )> {};
 
-	template<typename ReturnType, typename Clazz, typename... Args>
-	struct function_traits<ReturnType( Clazz::* )( Args... ) const>
-		: public function_traits<ReturnType( Clazz, Args... )>
-	{
-	};
+	template<typename ReturnType, typename Class, typename... Args>
+	struct function_traits<ReturnType( Class::* )( Args... ) const>
+		: function_traits<ReturnType( const Class*, Args... )> {};
+
+	template<typename ReturnType, typename Class, typename... Args>
+	struct function_traits<ReturnType( Class::* )( Args... ) volatile>
+		: function_traits<ReturnType( volatile Class*, Args... )> {};
+
+	template<typename ReturnType, typename Class, typename... Args>
+	struct function_traits<ReturnType( Class::* )( Args... ) const volatile>
+		: function_traits<ReturnType( const volatile Class*, Args... )> {};
 
 	template<typename Functor>
 	struct function_traits
@@ -62,10 +61,7 @@ namespace kmu
 	public:
 		using return_type = typename x_traits::return_type;
 
-		enum : size_t
-		{
-			arity = x_traits::arity
-		};
+		static const size_t arity = x_traits::arity
 
 		template<size_t N>
 		struct argument

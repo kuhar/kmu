@@ -142,7 +142,7 @@ namespace kmu
 	}
 
 	template<int From, int To,
-		size_t Count = ( size_t ) kmu::distance<From, To>::value + 1>
+		size_t Count = (size_t) kmu::distance<From, To>::value + 1>
 	inline const std::array<int, Count> makeRange()
 	{
 		std::array<int, Count> tab;
