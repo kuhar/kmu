@@ -90,7 +90,7 @@ int main()
 	cout << sizeof ( someClass ) << endl;
 
 	cout << type_index( 
-		typeid( kmu::get_type_at_index<3, int, char, bool, void, short>::type ) ).name() << "\n";
+		typeid( kmu::get_type_at<3, int, char, bool, void, short>::type ) ).name() << "\n";
 	cout << getTypeIndexOfTypeAtIndex<int, char, bool, void, short>(3).name() << "\n";
 	cout << kmu::get_index_of_type<void, bool, char, int, short, void, long>::value << "\n";
 	cout << kmu::get_index_of_type<void, bool, char, int, short, void>::value << "\n";

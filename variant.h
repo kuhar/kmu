@@ -160,14 +160,14 @@ namespace kmu
 		}
 
 		template<size_t Index, 
-				typename Type = typename kmu::get_type_at_index_t<Index, Ts...>>
+				typename Type = typename kmu::get_type_at_t<Index, Ts...>>
 		auto get() -> decltype( KMU_THIS_TEMPLATED_METHOD get<Type>() )
 		{
 			return get<Type>();
 		}
 
 		template<size_t Index,
-				typename Type = typename kmu::get_type_at_index_t<Index, Ts...>>
+				typename Type = typename kmu::get_type_at_t<Index, Ts...>>
 		auto get() const -> decltype( KMU_THIS_TEMPLATED_METHOD get<Type>() )
 		{
 				return get<Type>();
@@ -189,7 +189,7 @@ namespace kmu
 				return typeid ( UninitializedType );
 			}
 
-			return kmu::getTypeIndexOfTypeAtIndex<Ts...>( m_currentIndexOfType );
+			return kmu::getTypeIndexOfTypeAt<Ts...>( m_currentIndexOfType );
 		}
 
 	private:		
