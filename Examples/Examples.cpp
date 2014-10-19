@@ -5,7 +5,6 @@
 
 #include "explode.h"
 #include "variant.h"
-#include "inheriter.h"
 
 using namespace std;
 using namespace kmu;
