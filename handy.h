@@ -89,6 +89,12 @@ namespace kmu
 	template<typename... Ts>
 	using void_t = typename impl::voider<Ts...>::type;
 
+	template<typename T, typename = void>
+	struct has_member_type : std::false_type {};
+
+	template<typename T>
+	struct has_member_type<T, void_t<typename T::type>> : std::true_type {};
+
 	template<bool value, typename First, typename Second>
 	using if_t = typename std::conditional<value, First, Second>::type;
 
