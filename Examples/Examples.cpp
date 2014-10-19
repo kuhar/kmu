@@ -87,13 +87,19 @@ int main()
 	auto moveTest = std::move( original );
 	cout << sizeof( moveTest ) << endl;
 	cout << sizeof( moveTest.getCurrentTypeIndex() ) << endl;
-	cout << sizeof ( someClass ) << endl;
+	cout << sizeof( someClass ) << endl;
 
 	cout << type_index( 
 		typeid( kmu::get_type_at<3, int, char, bool, void, short>::type ) ).name() << "\n";
 	cout << getTypeIndexOfTypeAt<int, char, bool, void, short>(3).name() << "\n";
 	cout << kmu::get_index_of_type<void, bool, char, int, short, void, long>::value << "\n";
 	cout << kmu::get_index_of_type<void, bool, char, int, short, void>::value << "\n";
+
+	//debugTellType(kmu::get_type_at<3, int, char, bool, void, short>::type());
+	for( auto&& x : makeRange<3, 13>() )
+	{
+		cout << x << "\t";
+	}
 
 	return 0;
 }

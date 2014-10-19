@@ -69,6 +69,9 @@ namespace kmu
 	template<typename T>
 	using identity_t = typename identity<T>::type;
 
+	template<typename T>
+	void debugTellType(T);
+
 	namespace impl
 	{
 		template<typename...>
@@ -143,17 +146,20 @@ namespace kmu
 
 	template<int From, int To,
 		size_t Count = (size_t) kmu::distance<From, To>::value + 1>
-	inline const std::array<int, Count> makeRange()
+	inline std::array<int, Count> makeRange()
 	{
-		std::array<int, Count> tab;
-
-		int step = (To - From) < 0 ? -1 : 1;
-		int startValue = From;
-		for( int i = 0; i < Count; ++i )
+		static const std::array<int, Count> tab = []
 		{
-			tab[i] = startValue;
-			startValue += step;
-		}
+			std::array<int, Count> temp;
+			const int step = ( To - From ) < 0 ? -1 : 1;
+			int startValue = From;
+			for( size_t i = 0; i < Count; ++i )
+			{
+				temp[i] = startValue;
+				startValue += step;
+			}
+			return temp;
+		}();
 
 		return tab;
 	}
