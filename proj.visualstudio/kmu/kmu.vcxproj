@@ -82,6 +82,7 @@
     <ClInclude Include="..\..\integer_sequence.h" />
     <ClInclude Include="..\..\method_traits.h" />
     <ClInclude Include="..\..\template_math.h" />
+    <ClInclude Include="..\..\type_list.h" />
     <ClInclude Include="..\..\variant.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

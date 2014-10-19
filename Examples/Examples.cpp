@@ -5,6 +5,7 @@
 
 #include "explode.h"
 #include "variant.h"
+#include "type_list.h"
 
 using namespace std;
 using namespace kmu;
@@ -101,5 +102,11 @@ int main()
 		cout << x << "\t";
 	}
 
+	using first = type_list<void, int, char, long>;
+	using second = prepend_t<type_list<void, int, char, long>, string, char*>;
+	//debugTellType(type_list<void, int, char, long>::at<4>::type());
+	//debugTellType(type_list<void, int, char, long>::append<string, char*>::type());
+	//debugTellType(prepend_t<type_list<void, int, char, long>, string, char*>());
+	//debugTellType(type_list_cat_t<first, first, first>());
 	return 0;
 }

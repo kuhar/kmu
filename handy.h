@@ -16,6 +16,7 @@
 #include <vector>
 #include <array>
 #include <tuple>
+#include <utility>
 #include <cassert>
 
 #include "template_math.h"
@@ -65,12 +66,19 @@ namespace kmu
 	{
 		using type = T;
 	};
-	
-	template<typename T>
-	using identity_t = typename identity<T>::type;
+
+	namespace impl
+	{
+		template<typename T>
+		struct DebugTypeTeller; // no impl - substitution always fails 
+	}
 
 	template<typename T>
-	void debugTellType(T);
+	inline void debugTellType( T )
+	{
+		impl::DebugTypeTeller<T> t;
+		( void ) t;
+	}
 
 	namespace impl
 	{
@@ -102,6 +110,9 @@ namespace kmu
 	template<typename...>
 	struct are_all_unique;
 
+	template<>
+	struct are_all_unique<> : bool_constant<true> {};
+
 	template<typename First, typename... Rest>
 	struct are_all_unique<First, Rest...> 
 		: bool_constant<!kmu::is_one_of<First, Rest...>::value
@@ -110,15 +121,17 @@ namespace kmu
 	template<typename Only>
 	struct are_all_unique<Only> : std::true_type {};
 
-	template<size_t Index, typename... Ts>
+	template<size_t index, typename First, typename... Rest>
 	struct get_type_at
 	{
-		static_assert( sizeof... ( Ts ) > 0, "The list of types cannot be empty" );
-	private:
-		using tuple_type = std::tuple<Ts...>;
-	public:
-		using type = typename std::tuple_element<Index, tuple_type>::type;
+		static_assert( index < ( sizeof... (Rest) + 1 ),
+					   "Given index exceeds the number of types" );
+
+		using type = typename get_type_at<index - 1, Rest...>::type;
 	};
+
+	template<typename First, typename... Ts>
+	struct get_type_at<0, First, Ts...> : identity<First> {};
 
 	template<size_t Index, typename... Ts>
 	using get_type_at_t = typename get_type_at<Index, Ts...>::type;
