@@ -17,7 +17,7 @@ namespace kmu
 	struct type_list
 	{
 		static const size_t size = sizeof... (Ts);
-		static const bool is_empty = size > 0;
+		static const bool empty = size > 0;
 		static const bool are_all_unique = are_all_unique<Ts...>::value;
 
 		template<size_t index>
@@ -73,8 +73,8 @@ namespace kmu
 	template<typename>
 	struct head;
 
-	template<typename First, typename... Rest>
-	struct head<type_list<First, Rest...>> : identity<First> {};
+	template<template <typename...> class Container, typename First, typename... Rest>
+	struct head<Container<First, Rest...>> : identity<First> {};
 
 	template<typename T>
 	using head_t = type_t<head<T>>;
@@ -82,8 +82,8 @@ namespace kmu
 	template<typename>
 	struct tail;
 
-	template<typename First, typename... Rest>
-	struct tail<type_list<First, Rest...>> : identity<type_list<Rest...>> {};
+	template<template <typename...> class Container, typename First, typename... Rest>
+	struct tail<Container<First, Rest...>> : identity<Container<Rest...>> {};
 
 	template<typename T>
 	using tail_t = type_t<tail<T>>;
@@ -110,9 +110,10 @@ namespace kmu
 	template<typename, size_t begin, size_t end>
 	struct slice;
 
-	template<size_t begin, size_t end, typename... Ts>
-	struct slice<type_list<Ts...>, begin, end> 
-		: impl::slice_helper<type_list<>, begin, end, 0, Ts...>
+	template<template <typename...> class Container,
+			size_t begin, size_t end, typename... Ts>
+	struct slice<Container<Ts...>, begin, end> 
+		: impl::slice_helper<Container<>, begin, end, 0, Ts...>
 	{
 		static_assert( begin <= end, "Begin exceeds end" );
 		static_assert( end <= sizeof... ( Ts ), "End exceeds the size of type_list" );

@@ -36,15 +36,18 @@ namespace kmu
 	using apply_not = impl::apply_not_helper<Func, ArgsPack>;
 
 	template<template <typename...> class Func, typename... Args>
-	using requires_t = typename std::enable_if<Func<Args...>::value>::type;
+	using requires_t = void_t<type_t<std::enable_if<Func<Args...>::value>>>;
 
 	template<template <typename...> class Func, typename... Args>
-	using requires_not_t = typename std::enable_if<!Func<Args...>::value>::type;
+	using requires_not_t = void_t<type_t<std::enable_if<!Func<Args...>::value>>>;
+
+	template<bool value>
+	using when_t = type_t<std::enable_if<value>>;
 
 	template<template <typename> class Func, typename ArgsPack>
 	struct all_of
 		: bool_constant<
-			Func<head_t<ArgsPack>>::value && all_of<Func, tail_t<ArgsPack>>::value > {};
+			Func<head_t<ArgsPack>>::value && all_of<Func, tail_t<ArgsPack>>::value> {};
 
 	template<template <typename> class Func>
 	struct all_of<Func, type_list<>> : bool_constant<true> {};
