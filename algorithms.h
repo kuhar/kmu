@@ -13,12 +13,27 @@
 
 namespace kmu
 {
+	namespace impl
+	{
+		template<template <typename...> class Func, typename ArgsPack>
+		struct apply_helper;
 
-	template<template <typename...> class Func, typename... Args>
-	using apply = Func<Args...>;
+		template<template <typename...> class Func, typename... Ts>
+		struct apply_helper<Func, type_list<Ts...>> : Func<Ts...> {};
 
-	template<template <typename...> class Predicate, typename... Args>
-	using apply_not = bool_constant<Predicate<Args...>::value>;
+		template<template <typename...> class Func, typename ArgsPack>
+		struct apply_not_helper;
+
+		template<template <typename...> class Func, typename... Ts>
+		struct apply_not_helper<Func, type_list<Ts...>> 
+			: bool_constant<Func<Ts...>::value == false> {};
+	}
+
+	template<template <typename...> class Func, typename ArgsPack>
+	using apply = impl::apply_helper<Func, ArgsPack>;
+
+	template<template <typename...> class Func, typename ArgsPack>
+	using apply_not = impl::apply_not_helper<Func, ArgsPack>;
 
 	template<template <typename...> class Func, typename... Args>
 	using requires_t = typename std::enable_if<Func<Args...>::value>::type;
@@ -26,48 +41,44 @@ namespace kmu
 	template<template <typename...> class Func, typename... Args>
 	using requires_not_t = typename std::enable_if<!Func<Args...>::value>::type;
 
-	template<template <typename> class, typename...>
-	struct all_of;
-
-	template<template <typename> class Predicate, typename First, typename... Rest>
-	struct all_of<Predicate, First, Rest...>
+	template<template <typename> class Func, typename ArgsPack>
+	struct all_of
 		: bool_constant<
-			Predicate<First>::value && all_of<Predicate, Rest...>::value > {};
+			Func<head_t<ArgsPack>>::value && all_of<Func, tail_t<ArgsPack>>::value > {};
 
-	template<template <typename> class Predicate>
-	struct all_of<Predicate> : bool_constant<true> {};
+	template<template <typename> class Func>
+	struct all_of<Func, type_list<>> : bool_constant<true> {};
 
-	template<template <typename> class, typename...>
-	struct none_of;
-
-	template<template <typename> class Predicate, typename First, typename... Rest>
-	struct none_of<Predicate, First, Rest...>
+	template<template <typename> class Func, typename ArgsPack>
+	struct none_of
 		: bool_constant<
-			!Predicate<First>::value && none_of<Predicate, Rest...>::value> {};
+			!Func<head_t<ArgsPack>>::value && none_of<Func, tail_t<ArgsPack>>::value> {};
 
-	template<template <typename> class Predicate>
-	struct none_of<Predicate> : bool_constant<true> {};
+	template<template <typename> class Func>
+	struct none_of<Func, type_list<>> : bool_constant<true> {};
 
-	template<template <typename> class, typename...>
-	struct any_of;
-
-	template<template <typename> class Predicate, typename First, typename... Rest>
-	struct any_of<Predicate, First, Rest...>
+	template<template <typename> class Func, typename ArgsPack>
+	struct any_of
 		: bool_constant<
-			Predicate<First>::value || any_of<Predicate, Rest...>::value> {};
+			Func<head_t<ArgsPack>>::value || any_of<Func, tail_t<ArgsPack>>::value> {};
 
-	template<template <typename> class Predicate>
-	struct any_of<Predicate> : bool_constant<false> {};
+	template<template <typename> class Func>
+	struct any_of<Func, type_list<>> : bool_constant<false> {};
 
-	template<template <typename> class, typename...>
-	struct count_if;
+	template<template <typename> class Func, typename ArgsPack>
+	struct count_if
+		: size_t_constant<size_t( Func<head_t<ArgsPack>>::value )
+			+ count_if<Func, tail_t<ArgsPack>>::value> {};
 
-	template<template <typename> class Predicate, typename First, typename... Rest>
-	struct count_if<Predicate, First, Rest...>
-		: size_t_constant<size_t( Predicate<First>::value )
-						+ count_if<Predicate, Rest...>::value> {};
+	template<template <typename> class Func>
+	struct count_if<Func, type_list<>> : size_t_constant<0> {};
 
-	template<template <typename> class Predicate>
-	struct count_if<Predicate> : size_t_constant<0> {};
+	template<template <typename> class Func, typename ArgsPack>
+	struct count_if_not
+		: size_t_constant<( Func<head_t<ArgsPack>>::value ? 0 : 1 )
+			+ count_if_not<Func, tail_t<ArgsPack>>::value> {};
+
+	template<template <typename> class Func>
+	struct count_if_not<Func, type_list<>> : size_t_constant<0> {};
 	
 } // namespace kmu
