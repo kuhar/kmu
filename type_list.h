@@ -40,19 +40,19 @@ namespace kmu
 	struct element_at : T::template at<index> {};
 
 	template<size_t index, typename T>
-	using element_at_t = typename element_at<index, T>::type;
+	using element_at_t = type_t<element_at<index, T>>;
 
 	template<typename T, typename... Ts>
 	struct append : T::template append<Ts...> {};
 
 	template<typename T, typename... Ts>
-	using append_t = typename append<T, Ts...>::type;
+	using append_t = type_t<append<T, Ts...>>;
 
 	template<typename T, typename... Ts>
 	struct prepend : T::template prepend<Ts...> {};
 
 	template<typename T, typename... Ts>
-	using prepend_t = typename prepend<T, Ts...>::type;
+	using prepend_t = type_t<prepend<T, Ts...>>;
 
 	template<typename...>
 	struct type_list_cat;
@@ -68,7 +68,7 @@ namespace kmu
 		: type_list_cat<type_list<Ts..., Xs...>, Rest...> {};
 
 	template<typename... Ts>
-	using type_list_cat_t = typename type_list_cat<Ts...>::type;
+	using type_list_cat_t = type_t<type_list_cat<Ts...>>;
 
 	template<typename>
 	struct head;
@@ -77,7 +77,7 @@ namespace kmu
 	struct head<type_list<First, Rest...>> : identity<First> {};
 
 	template<typename T>
-	using head_t = typename head<T>::type;
+	using head_t = type_t<head<T>>;
 
 	template<typename>
 	struct tail;
@@ -86,7 +86,7 @@ namespace kmu
 	struct tail<type_list<First, Rest...>> : identity<type_list<Rest...>> {};
 
 	template<typename T>
-	using tail_t = typename tail<T>::type;
+	using tail_t = type_t<tail<T>>;
 
 	namespace impl
 	{
@@ -119,18 +119,18 @@ namespace kmu
 	};
 
 	template<typename T, size_t begin, size_t end>
-	using slice_t = typename slice<T, begin, end>::type;
+	using slice_t = type_t<slice<T, begin, end>>;
 
 	template<typename T, size_t end>
 	struct slice_to : slice<T, 0, end> {};
 
 	template<typename T, size_t end>
-	using slice_to_t = typename slice_to<T, end>::type;
+	using slice_to_t = type_t<slice_to<T, end>>;
 
 	template<typename T, size_t from>
 	struct slice_from : slice<T, from, T::size> {};
 
 	template<typename T, size_t from>
-	using slice_from_t = typename slice_from<T, from>::type;
+	using slice_from_t = type_t<slice_from<T, from>>;
 
 } // namespace kmu

@@ -95,8 +95,20 @@ namespace kmu
 	template<typename T>
 	struct has_member_type<T, void_t<typename T::type>> : std::true_type {};
 
+	namespace impl
+	{
+		template<typename T>
+		struct type_t_helper : identity<typename T::type>
+		{
+			static_assert( has_member_type<T>::value, "T has no type member" );
+		};
+	}
+
+	template<typename T>
+	using type_t = typename impl::type_t_helper<T>::type;
+
 	template<bool value, typename First, typename Second>
-	using if_t = typename std::conditional<value, First, Second>::type;
+	using if_t = type_t<std::conditional<value, First, Second>>;
 
 	template<bool value>
 	using bool_constant = if_t<value, std::true_type, std::false_type>;
@@ -136,14 +148,14 @@ namespace kmu
 		static_assert( index < ( sizeof... (Rest) + 1 ),
 					   "Given index exceeds the number of types" );
 
-		using type = typename get_type_at<index - 1, Rest...>::type;
+		using type = type_t<get_type_at<index - 1, Rest...>>;
 	};
 
 	template<typename First, typename... Ts>
 	struct get_type_at<0, First, Ts...> : identity<First> {};
 
 	template<size_t Index, typename... Ts>
-	using get_type_at_t = typename get_type_at<Index, Ts...>::type;
+	using get_type_at_t = type_t<get_type_at<Index, Ts...>>;
 
 	template<typename... Ts>
 	inline std::type_index getTypeIndexOfTypeAt( size_t index )
