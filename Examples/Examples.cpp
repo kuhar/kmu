@@ -109,7 +109,8 @@ int main()
 	//debugTellType(type_list<void, int, char, long>::append<string, char*>::type());
 	//debugTellType(prepend_t<type_list<void, int, char, long>, string, char*>());
 	//debugTellType(type_list_cat_t<first, first, first>());
-
+	using third = slice_t<first, 0, 4>;
+	//debugTellType(slice_to_t<third, 1>());
 	cout << boolalpha << "\n" << kmu::none_of<std::is_const, const int, char>::value << "\n";
 	cout << kmu::any_of<std::is_const, const int, char>::value << "\n";
 	cout << kmu::count_if<std::is_const, const int, char, const string>::value << "\n";
