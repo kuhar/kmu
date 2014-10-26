@@ -35,8 +35,7 @@ namespace kmu
 		struct x_make_integer_sequence_helper
 			: x_make_integer_sequence_helper<Type, std::integral_constant<Type, Number::value - 1>,
 			typename ReturnType::template prepend<Number::value - 1>>
-		{
-		};
+		{};
 	} // namespace impl
 
 	template<typename Type, Type Number>
@@ -54,13 +53,13 @@ namespace kmu
 
 	namespace impl
 	{
-		static_assert( std::is_same<make_integer_sequence<int, 0>,
-					   integer_sequence<int>>::value, "integer_sequence error" );
-		static_assert( std::is_same<make_integer_sequence<int, 1>,
-					   integer_sequence<int, 0>>::value, "integer_sequence error" );
-		static_assert( std::is_same<make_integer_sequence<int, 2>,
-					   integer_sequence<int, 0, 1>>::value, "integer_sequence error" );
-		static_assert( std::is_same<make_integer_sequence<int, 3>,
-					   integer_sequence<int, 0, 1, 2>>::value, "integer_sequence error" );
+		static_assert(std::is_same<make_integer_sequence<int, 0>,
+					   integer_sequence<int>>::value, "integer_sequence error");
+		static_assert(std::is_same<make_integer_sequence<int, 1>,
+					   integer_sequence<int, 0>>::value, "integer_sequence error");
+		static_assert(std::is_same<make_integer_sequence<int, 2>,
+					   integer_sequence<int, 0, 1>>::value, "integer_sequence error");
+		static_assert(std::is_same<make_integer_sequence<int, 3>,
+					   integer_sequence<int, 0, 1, 2>>::value, "integer_sequence error");
 	} // namespace impl
 } // namespace kmu

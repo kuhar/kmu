@@ -25,24 +25,24 @@ namespace kmu
 	{
 		// VC12 workaround
 		template <typename Functor, typename Tuple, size_t... Index>
-		auto x_explode_helper( Functor&& functor, Tuple&& tupleOfArgs, 
-							   integer_sequence<size_t, Index...> )
-			-> decltype( std::forward<Functor>( functor )( 
-			std::get<Index>( std::forward<Tuple>( tupleOfArgs ) )... ) )
+		auto x_explode_helper(Functor&& functor, Tuple&& tupleOfArgs, 
+							   integer_sequence<size_t, Index...>)
+			-> decltype(std::forward<Functor>(functor)( 
+				std::get<Index>(std::forward<Tuple>(tupleOfArgs))...))
 		{
-			return std::forward<Functor>( functor )( std::get<Index>( 
-				std::forward<Tuple>( tupleOfArgs ) )... );
+			return std::forward<Functor>(functor)(std::get<Index>( 
+				std::forward<Tuple>(tupleOfArgs))...);
 		}
 	} // namespace impl
 
 	template <typename Functor, typename Tuple>
-	auto explode( Functor&& functor, Tuple&& tupleOfArgs )
-		-> decltype( impl::x_explode_helper( std::forward<Functor>( functor ), 
-		std::forward<Tuple>( tupleOfArgs ),
-	make_index_sequence<std::tuple_size<typename std::decay<Tuple>::type>::value>() ) )
+	auto explode(Functor&& functor, Tuple&& tupleOfArgs)
+		-> decltype(impl::x_explode_helper(std::forward<Functor>(functor), 
+			std::forward<Tuple>(tupleOfArgs),
+	make_index_sequence<std::tuple_size<typename std::decay<Tuple>::type>::value>()))
 	{
-		return impl::x_explode_helper( std::forward<Functor>( functor ), 
-			std::forward<Tuple>( tupleOfArgs ),
-			make_index_sequence<std::tuple_size<typename std::decay<Tuple>::type>::value>() );
+		return impl::x_explode_helper(std::forward<Functor>(functor), 
+			std::forward<Tuple>(tupleOfArgs),
+			make_index_sequence<std::tuple_size<typename std::decay<Tuple>::type>::value>());
 	}
 } // namespace kmu

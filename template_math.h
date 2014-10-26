@@ -53,7 +53,7 @@ namespace kmu
 	template<int FirstValue, int SecondValue>
 	struct modulo_values
 	{
-		static_assert( SecondValue != 0, "Division by 0" );
+		static_assert(SecondValue != 0, "Division by 0");
 		static const int value = FirstValue % SecondValue;
 	};
 
@@ -61,8 +61,8 @@ namespace kmu
 	struct distance
 	{
 
-		static const int value = ( FirstValue - SecondValue ) < 0
-			? -( FirstValue - SecondValue ) : ( FirstValue - SecondValue );
+		static const int value = (FirstValue - SecondValue) < 0
+			? -(FirstValue - SecondValue) : (FirstValue - SecondValue);
 	};
 
 	template<int Value>
@@ -73,16 +73,16 @@ namespace kmu
 	template<int FirstValue, int SecondValue>
 	struct divide_and_round_values
 	{
-		static_assert( SecondValue != 0, "Division by 0" );
+		static_assert(SecondValue != 0, "Division by 0");
 	private:
 		static const int x_potential_additional = is_negative<multiply_values<FirstValue, 
 										SecondValue>::value>::value ? -1 : 1;
 			
-		static const int x_additional =  ( ( ( FirstValue % SecondValue ) * 2 ) 
-						>= absolute_value<SecondValue>::value ) ? x_potential_additional : 0;
+		static const int x_additional =  (((FirstValue % SecondValue) * 2) 
+						>= absolute_value<SecondValue>::value) ? x_potential_additional : 0;
 
 	public:
-		static const int value =  ( ( 2 * FirstValue / SecondValue ) + x_additional ) / 2;
+		static const int value =  ((2 * FirstValue / SecondValue) + x_additional) / 2;
 	};
 
 	template<int FirstValue, int SecondValue>

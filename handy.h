@@ -35,9 +35,9 @@ namespace kmu
 		struct x_result_of;
 
 		template<typename Functor, typename... ArgTypes>
-		struct x_result_of<Functor( ArgTypes... )>
+		struct x_result_of<Functor(ArgTypes...)>
 		{
-			typedef decltype( std::declval<Functor>()( std::declval<ArgTypes>()... ) ) type;
+			typedef decltype(std::declval<Functor>()( std::declval<ArgTypes>()...)) type;
 		};
 
 		template<typename T>
@@ -74,10 +74,10 @@ namespace kmu
 	}
 
 	template<typename T>
-	inline void debugTellType( T )
+	inline void debugTellType(T)
 	{
 		impl::DebugTypeTeller<T> t;
-		( void ) t;
+		(void) t;
 	}
 
 	namespace impl
@@ -100,7 +100,7 @@ namespace kmu
 		template<typename T>
 		struct type_t_helper : identity<typename T::type>
 		{
-			static_assert( has_member_type<T>::value, "T has no type member" );
+			static_assert(has_member_type<T>::value, "T has no type member");
 		};
 	}
 
@@ -145,8 +145,8 @@ namespace kmu
 	template<size_t index, typename First, typename... Rest>
 	struct get_type_at
 	{
-		static_assert( index < ( sizeof... (Rest) + 1 ),
-					   "Given index exceeds the number of types" );
+		static_assert(index < (sizeof... (Rest) + 1),
+					   "Given index exceeds the number of types");
 
 		using type = type_t<get_type_at<index - 1, Rest...>>;
 	};
@@ -158,10 +158,10 @@ namespace kmu
 	using get_type_at_t = type_t<get_type_at<Index, Ts...>>;
 
 	template<typename... Ts>
-	inline std::type_index getTypeIndexOfTypeAt( size_t index )
+	inline std::type_index getTypeIndexOfTypeAt(size_t index)
 	{
-		assert( index < sizeof... ( Ts ) && "Given index exceeds the number of types" );
-		static const std::type_index types[] = { typeid( Ts )... };
+		assert(index < sizeof... (Ts) && "Given index exceeds the number of types" );
+		static const std::type_index types[] = { typeid(Ts)... };
 		return types[index];
 	}
 
@@ -169,13 +169,13 @@ namespace kmu
 	struct get_index_of_type
 	{
 		static const size_t value = impl::get_index_of_type_helper<0, SearchedType, Types...>::value;
-		static_assert( value != Constants::Size_T_Max, "Type not found" );
+		static_assert(value != Constants::Size_T_Max, "Type not found");
 	};
 
 	template<typename T>
-	std::vector<T> makeVectorOfElements( const T& element, size_t count = 1 )
+	std::vector<T> makeVectorOfElements(const T& element, size_t count = 1)
 	{
-		return std::vector<T>( count, element );
+		return std::vector<T>(count, element);
 	}
 
 	template<int From, int To,
@@ -185,11 +185,11 @@ namespace kmu
 		static const std::array<int, Count> tab = []
 		{
 			std::array<int, Count> temp;
-			const int step = ( To - From ) < 0 ? -1 : 1;
+			const int step = (To - From) < 0 ? -1 : 1;
 			int startValue = From;
-			for( size_t i = 0; i < Count; ++i )
+			for(auto& x : temp)
 			{
-				temp[i] = startValue;
+				x = startValue;
 				startValue += step;
 			}
 			return temp;

@@ -115,8 +115,8 @@ namespace kmu
 	struct slice<Container<Ts...>, begin, end> 
 		: impl::slice_helper<Container<>, begin, end, 0, Ts...>
 	{
-		static_assert( begin <= end, "Begin exceeds end" );
-		static_assert( end <= sizeof... ( Ts ), "End exceeds the size of type_list" );
+		static_assert(begin <= end, "Begin exceeds end");
+		static_assert(end <= sizeof... (Ts), "End exceeds the size of type_list");
 	};
 
 	template<typename T, size_t begin, size_t end>
