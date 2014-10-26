@@ -70,7 +70,7 @@ namespace kmu
 
 	template<template <typename> class Func, typename ArgsPack>
 	struct count_if
-		: size_t_constant<size_t( Func<head_t<ArgsPack>>::value )
+		: size_t_constant<size_t(Func<head_t<ArgsPack>>::value)
 			+ count_if<Func, tail_t<ArgsPack>>::value> {};
 
 	template<template <typename> class Func>
@@ -78,7 +78,7 @@ namespace kmu
 
 	template<template <typename> class Func, typename ArgsPack>
 	struct count_if_not
-		: size_t_constant<( Func<head_t<ArgsPack>>::value ? 0 : 1 )
+		: size_t_constant<(Func<head_t<ArgsPack>>::value ? 0 : 1)
 			+ count_if_not<Func, tail_t<ArgsPack>>::value> {};
 
 	template<template <typename> class Func>
