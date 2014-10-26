@@ -8,7 +8,7 @@
 #pragma once
 
 #include <type_traits>
-#include <tuple>
+#include "type_list.h"
 
 namespace kmu
 {
@@ -24,11 +24,10 @@ namespace kmu
 		static const size_t	arity = sizeof... (Args);
 
 		template <std::size_t N>
-		struct argument
+		struct argument : get_type_at<N, Args...>
 		{
 			static_assert(N < arity,
 							"Given index is greater than the number of arguments");
-			using type = typename std::tuple_element<N, std::tuple<Args...>>::type;
 		};
 	};
 
@@ -64,10 +63,8 @@ namespace kmu
 		static const size_t arity = x_traits::arity
 
 		template<size_t N>
-		struct argument
-		{
-			using type = typename x_traits::template argument<N>::type;
-		};
+		struct argument 
+			: identity<typename x_traits::template argument<N>::type> {};
 	};
 	
 } // namespace kmu
