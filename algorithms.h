@@ -16,21 +16,12 @@ namespace kmu
 	namespace impl
 	{
 		template<template <typename...> class Func, typename ArgsPack>
-		struct apply_helper;
-
-		template<template <typename...> class Func, typename... Ts>
-		struct apply_helper<Func, type_list<Ts...>> : Func<Ts...> {};
-
-		template<template <typename...> class Func, typename ArgsPack>
 		struct apply_not_helper;
 
 		template<template <typename...> class Func, typename... Ts>
 		struct apply_not_helper<Func, type_list<Ts...>> 
 			: bool_constant<Func<Ts...>::value == false> {};
 	}
-
-	template<template <typename...> class Func, typename ArgsPack>
-	using apply = impl::apply_helper<Func, ArgsPack>;
 
 	template<template <typename...> class Func, typename ArgsPack>
 	using apply_not = impl::apply_not_helper<Func, ArgsPack>;

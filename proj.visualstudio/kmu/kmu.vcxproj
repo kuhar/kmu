@@ -77,7 +77,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\algorithms.h" />
-    <ClInclude Include="..\..\explode.h" />
+    <ClInclude Include="..\..\apply.h" />
     <ClInclude Include="..\..\function_traits.h" />
     <ClInclude Include="..\..\handy.h" />
     <ClInclude Include="..\..\integer_sequence.h" />

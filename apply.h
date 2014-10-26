@@ -7,7 +7,7 @@
 */
 
 /* INFO:
-*  kmu::explode enables you to call every non-const callable object
+*  kmu::apply enables you to call every non-const callable object
 *  with a std::tuple of parameters
 */
 
@@ -25,7 +25,7 @@ namespace kmu
 	{
 		// VC12 workaround
 		template <typename Functor, typename Tuple, size_t... Index>
-		auto x_explode_helper(Functor&& functor, Tuple&& tupleOfArgs, 
+		auto apply_helper(Functor&& functor, Tuple&& tupleOfArgs, 
 							   integer_sequence<size_t, Index...>)
 			-> decltype(std::forward<Functor>(functor)( 
 				std::get<Index>(std::forward<Tuple>(tupleOfArgs))...))
@@ -36,12 +36,12 @@ namespace kmu
 	} // namespace impl
 
 	template <typename Functor, typename Tuple>
-	auto explode(Functor&& functor, Tuple&& tupleOfArgs)
-		-> decltype(impl::x_explode_helper(std::forward<Functor>(functor), 
+	auto apply(Functor&& functor, Tuple&& tupleOfArgs)
+		-> decltype(impl::apply_helper(std::forward<Functor>(functor), 
 			std::forward<Tuple>(tupleOfArgs),
 	make_index_sequence<std::tuple_size<typename std::decay<Tuple>::type>::value>()))
 	{
-		return impl::x_explode_helper(std::forward<Functor>(functor), 
+		return impl::apply_helper(std::forward<Functor>(functor), 
 			std::forward<Tuple>(tupleOfArgs),
 			make_index_sequence<std::tuple_size<typename std::decay<Tuple>::type>::value>());
 	}

@@ -25,13 +25,13 @@
     <ClInclude Include="..\..\variant.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\explode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\type_list.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\algorithms.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\apply.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
