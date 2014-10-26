@@ -18,7 +18,7 @@ namespace kmu
 	{
 		static const size_t size = sizeof... (Ts);
 		static const bool empty = size > 0;
-		static const bool are_all_unique = are_all_unique<Ts...>::value;
+		static const bool are_all_unique = kmu::are_all_unique<Ts...>::value;
 
 		template<size_t index>
 		struct at : get_type_at<index, Ts...> {};
