@@ -37,7 +37,7 @@ namespace kmu
 		template<typename Functor, typename... ArgTypes>
 		struct x_result_of<Functor(ArgTypes...)>
 		{
-			typedef decltype(std::declval<Functor>()( std::declval<ArgTypes>()...)) type;
+			typedef decltype(std::declval<Functor>()(std::declval<ArgTypes>()...)) type;
 		};
 
 		template<typename T>

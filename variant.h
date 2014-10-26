@@ -16,6 +16,7 @@
 #include <cassert>
 
 #include "handy.h"
+#include "type_list.h"
 
 #ifdef _MSC_VER
 #define KMU_THIS_TEMPLATED_METHOD
@@ -28,22 +29,24 @@ namespace kmu
 	namespace impl
 	{
 		template<typename T>
-		struct wrap_reference
+		struct wrap_reference 
+			: identity<if_t<std::is_lvalue_reference<T>::value,
+						typename std::reference_wrapper<
+							typename std::remove_reference<T>::type>,
+						T>
+			>
 		{
 			static_assert(!std::is_rvalue_reference<T>::value,
 						   "Usage of rvalue references as Variant subtype is not allowed");
-
-			using type = typename std::conditional<std::is_lvalue_reference<T>::value,
-				typename std::reference_wrapper<typename std::remove_reference<T>::type>, T>::type;
 		};
 
 		template<typename T>
-		using wrap_reference_t = typename wrap_reference<T>::type;
+		using wrap_reference_t = type_t<wrap_reference<T>>;
 		
 		template<typename First, typename... Rest>
 		struct maxSizeof
 		{
-			using FirstType = typename wrap_reference<First>::type;
+			using FirstType = wrap_reference_t<First>;
 
 			static const size_t value = sizeof(FirstType) > maxSizeof<Rest...>::value
 						? sizeof(FirstType) : maxSizeof<Rest...>::value;
@@ -52,13 +55,13 @@ namespace kmu
 		template<typename First>
 		struct maxSizeof<First>
 		{
-			static const size_t value = sizeof(typename wrap_reference<First>::type);
+			static const size_t value = sizeof(wrap_reference_t<First>);
 		};
 
 		template<typename First, typename... Rest>
 		struct maxAlignof
 		{
-			using FirstType = typename wrap_reference<First>::type;
+			using FirstType = wrap_reference_t<First>;
 
 			static const size_t value = std::alignment_of<FirstType>::value 
 										> maxAlignof<Rest...>::value
@@ -136,7 +139,7 @@ namespace kmu
 			VisitorHelper<Ts...>::destroy(m_storage, m_currentIndexOfType);
 			m_currentIndexOfType = kmu::get_index_of_type<Type, Ts...>::value;
 
-			using wrappedType = typename impl::wrap_reference_t<Type>;
+			using wrappedType = impl::wrap_reference_t<Type>;
 			new (std::addressof(m_storage)) wrappedType(std::forward<Args>(params)...);
 		}
 
@@ -145,7 +148,7 @@ namespace kmu
 		{			
 			assert(m_currentIndexOfType == Index && "Type mismatch");
 
-			using wrappedType = typename impl::wrap_reference_t<Type>;
+			using wrappedType = impl::wrap_reference_t<Type>;
 			return *reinterpret_cast<wrappedType*>(std::addressof(m_storage));
 		}
 
@@ -154,23 +157,23 @@ namespace kmu
 		{
 			assert((getCurrentTypeIndex() == typeid(Type)) && "Type mismatch");
 
-			using wrappedType = typename impl::wrap_reference_t<Type>;
+			using wrappedType = impl::wrap_reference_t<Type>;
 			return *reinterpret_cast<typename std::add_const<wrappedType>::type*>(
 													std::addressof(m_storage));
 		}
 
 		template<size_t Index, 
-				typename Type = typename kmu::get_type_at_t<Index, Ts...>>
+				typename Type = kmu::get_type_at_t<Index, Ts...>>
 		auto get() -> decltype(KMU_THIS_TEMPLATED_METHOD get<Type>())
 		{
 			return get<Type>();
 		}
 
 		template<size_t Index,
-				typename Type = typename kmu::get_type_at_t<Index, Ts...>>
+				typename Type = kmu::get_type_at_t<Index, Ts...>>
 		auto get() const -> decltype(KMU_THIS_TEMPLATED_METHOD get<Type>())
 		{
-				return get<Type>();
+			return get<Type>();
 		}
 
 		void reset()
@@ -186,7 +189,7 @@ namespace kmu
 
 			if (m_currentIndexOfType == UninitializedIndex )
 			{
-				return typeid (UninitializedType);
+				return typeid(UninitializedType);
 			}
 
 			return kmu::getTypeIndexOfTypeAt<Ts...>(m_currentIndexOfType);
@@ -213,7 +216,7 @@ namespace kmu
 			{
 				if (currentIndex == kmu::get_index_of_type<First, Ts...>::value)
 				{
-					using wrappedType = typename impl::wrap_reference_t<First>;
+					using wrappedType = impl::wrap_reference_t<First>;
 					reinterpret_cast<wrappedType*> (std::addressof( storage))->~wrappedType();
 					currentIndex = UninitializedIndex;
 					
