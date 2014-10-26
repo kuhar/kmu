@@ -136,7 +136,7 @@ namespace kmu
 		}
 
 		template<typename Type, size_t Index = kmu::get_index_of_type<Type, Ts...>::value>
-		Type& get()
+		Type& get() noexcept
 		{			
 			assert(m_currentIndexOfType == Index && "Type mismatch");
 
@@ -145,7 +145,7 @@ namespace kmu
 		}
 
 		template<typename Type>
-		const Type& get() const
+		const Type& get() const noexcept
 		{
 			assert((getCurrentTypeIndex() == typeid(Type)) && "Type mismatch");
 
@@ -156,14 +156,14 @@ namespace kmu
 
 		template<size_t Index, 
 				typename Type = kmu::get_type_at_t<Index, Ts...>>
-		auto get() -> decltype(KMU_THIS_TEMPLATED_METHOD get<Type>())
+		auto get() noexcept -> decltype(KMU_THIS_TEMPLATED_METHOD get<Type>())
 		{
 			return get<Type>();
 		}
 
 		template<size_t Index,
 				typename Type = kmu::get_type_at_t<Index, Ts...>>
-		auto get() const -> decltype(KMU_THIS_TEMPLATED_METHOD get<Type>())
+		auto get() const noexcept -> decltype(KMU_THIS_TEMPLATED_METHOD get<Type>())
 		{
 			return get<Type>();
 		}
@@ -174,7 +174,7 @@ namespace kmu
 			m_currentIndexOfType = UninitializedIndex;
 		}
 
-		std::type_index getCurrentTypeIndex() const
+		std::type_index getCurrentTypeIndex() const noexcept
 		{
 			assert((m_currentIndexOfType < sizeof... (Ts) 
 					|| m_currentIndexOfType == UninitializedIndex) && "Type mismatch");
@@ -247,28 +247,28 @@ namespace kmu
 	};
 
 	template<typename Type, typename... Ts>
-	inline auto get(kmu::Variant<Ts...>& variant)
+	inline auto get(kmu::Variant<Ts...>& variant) noexcept
 		-> decltype(variant.template get<Type>())
 	{
 		return variant.template get<Type>();
 	}
 
 	template<typename Type, typename... Ts>
-	inline auto get(const kmu::Variant<Ts...>& variant)
+	inline auto get(const kmu::Variant<Ts...>& variant) noexcept
 		-> decltype(variant.template get<Type>())
 	{
 		return variant.template get<Type>();
 	}
 
 	template<size_t Index, typename... Ts>
-	inline auto get(kmu::Variant<Ts...>& variant)
+	inline auto get(kmu::Variant<Ts...>& variant) noexcept
 		-> decltype(variant.template get<Index>())
 	{
 		return variant.template get<Index>();
 	}
 
 	template<size_t Index, typename... Ts>
-	inline auto get(const kmu::Variant<Ts...>& variant)
+	inline auto get(const kmu::Variant<Ts...>& variant) noexcept
 		-> decltype(variant.template get<Index>())
 	{
 		return variant.template get<Index>();

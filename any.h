@@ -107,6 +107,11 @@ namespace kmu
 			return is<NullType>();
 		}
 
+		bool isNotNull() const noexcept
+		{
+			return isNull() == false;
+		}
+
 		template<typename T>
 		T& as()
 		{
