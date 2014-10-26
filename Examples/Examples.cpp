@@ -7,6 +7,7 @@
 #include "variant.h"
 #include "type_list.h"
 #include "algorithms.h"
+#include "any.h"
 
 using namespace std;
 using namespace kmu;
@@ -114,5 +115,17 @@ int main()
 	cout << boolalpha << "\n" << kmu::all_of<std::is_const, type_list<int>>::value << "\n";
 	cout << kmu::any_of<std::is_const, type_list<const int, char>>::value << "\n";
 	cout << kmu::count_if<std::is_const, type_list<const int, char, const string>>::value << "\n";
+
+	any xyz;
+	cout << "\n" << xyz.isNull() << "\n";
+
+	any yyy = 42;
+	cout << "\n" << yyy.isNull() << "\t" << yyy.is<int>() << "\t" << yyy.as<int>() << "\n";
+
+	any zzz = makeAny<size_t>(33);
+	cout << "\n" << zzz.isNull() << "\t" << zzz.is<int>() << "\t" << zzz.as<size_t>() << "\n";
+	zzz = std::move(yyy);
+	cout << "\n" << zzz.isNull() << "\t" << zzz.is<int>() << "\t" << zzz.as<int>() << "\n";
+
 	return 0;
 }

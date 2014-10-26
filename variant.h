@@ -17,6 +17,7 @@
 
 #include "handy.h"
 #include "type_list.h"
+#include "uninitialized.h"
 
 #ifdef _MSC_VER
 #define KMU_THIS_TEMPLATED_METHOD
@@ -73,16 +74,7 @@ namespace kmu
 		{
 			static const size_t value = std::alignment_of<typename wrap_reference<First>::type>::value;
 		};
-		
-		struct Uninitialized final
-		{
-			Uninitialized() = delete;
-			~Uninitialized() = delete;
-			Uninitialized(const Uninitialized&) = delete;
-			Uninitialized(Uninitialized&&) = delete;
-			Uninitialized& operator=(const Uninitialized&) = delete;
-			Uninitialized& operator= (Uninitialized&&) = delete;
-		};
+
 	} // namespace impl
 	
 	template<typename... Ts>
@@ -94,7 +86,7 @@ namespace kmu
 						"Given count of types exceeds the limit");
 
 	public:
-		using UninitializedType = impl::Uninitialized;
+		using UninitializedType = Uninitialized;
 
 		Variant()
 			: m_currentIndexOfType(UninitializedIndex)

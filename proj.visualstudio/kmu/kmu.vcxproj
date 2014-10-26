@@ -77,6 +77,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\algorithms.h" />
+    <ClInclude Include="..\..\any.h" />
     <ClInclude Include="..\..\apply.h" />
     <ClInclude Include="..\..\function_traits.h" />
     <ClInclude Include="..\..\handy.h" />
@@ -84,6 +85,7 @@
     <ClInclude Include="..\..\method_traits.h" />
     <ClInclude Include="..\..\template_math.h" />
     <ClInclude Include="..\..\type_list.h" />
+    <ClInclude Include="..\..\uninitialized.h" />
     <ClInclude Include="..\..\variant.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

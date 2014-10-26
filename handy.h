@@ -180,7 +180,7 @@ namespace kmu
 
 	template<int From, int To,
 		size_t Count = (size_t) kmu::distance<From, To>::value + 1>
-	inline std::array<int, Count> makeRange()
+	inline std::array<int, Count> makeRange() noexcept
 	{
 		static const std::array<int, Count> tab = []
 		{
@@ -196,5 +196,12 @@ namespace kmu
 		}();
 
 		return tab;
+	}
+
+	template<typename T>
+	inline size_t getTypeHash() noexcept
+	{
+		static const size_t hash = std::type_index(typeid( T )).hash_code();
+		return hash;
 	}
 } // namespace kmu
