@@ -69,11 +69,6 @@ namespace kmu
 			: m_pValue(std::make_unique<impl::ConcreteHolder<T>>(std::forward<T>(value)))
 		{}
 
-		template<size_t N>
-		any(const char (&value)[N])
-			: m_pValue(std::make_unique<impl::ConcreteHolder<const char*>>(value))
-		{}
-
 		any(const any& that)
 		{
 			assert(that.m_pValue);

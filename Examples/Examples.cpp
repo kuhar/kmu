@@ -121,7 +121,7 @@ int main()
 
 	any yyy = 42;
 	cout << "\n" << yyy.isNull() << "\t" << yyy.is<int>() << "\t" << yyy.as<int>() << "\n";
-	yyy = "xaxaxxaxa\n";
+	yyy = (const char*)"xaxaxxaxa\n";
 	cout << yyy.getTypeIndex().name() << "\t" << yyy.as<const char*>();
 	yyy = 4.5f;
 	cout << yyy.is<float>() << "\t" << yyy.as<float>() << "\n";
