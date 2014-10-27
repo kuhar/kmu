@@ -10,6 +10,7 @@
 
 #include <memory>
 #include <typeindex>
+#include <algorithm>
 
 #include "handy.h"
 #include "uninitialized.h"
@@ -18,23 +19,23 @@ namespace kmu
 {
 	namespace impl
 	{
-		struct x_Base
+		struct HolderBase
 		{
-			virtual std::unique_ptr<x_Base> clone() const = 0;
-			virtual ~x_Base() = default;
+			virtual std::unique_ptr<HolderBase> clone() const = 0;
+			virtual ~HolderBase() = default;
 		};
 
 		template<typename T>
-		struct x_Concrete : public x_Base
+		struct ConcreteHolder : public HolderBase
 		{
 			template<typename... Ts>
-			x_Concrete(Ts&&... ts)
+			ConcreteHolder(Ts&&... ts)
 				: m_content(std::forward<Ts>(ts)...)
 			{}
 
-			std::unique_ptr<x_Base> clone() const override
+			std::unique_ptr<HolderBase> clone() const override
 			{
-				return std::make_unique<x_Concrete>(m_content);
+				return std::make_unique<ConcreteHolder>(m_content);
 			}
 
 			T m_content;
@@ -48,13 +49,13 @@ namespace kmu
 		using NullType = null_t;
 
 		any()
-			: m_pValue(std::make_unique<impl::x_Concrete<NullType>>())
+			: m_pValue(std::make_unique<impl::ConcreteHolder<NullType>>())
 			, m_typeHash(getTypeHash<NullType>())
 		{}
 
 		template<typename T>
 		any(T&& value)
-			: m_pValue(std::make_unique<impl::x_Concrete<T>>(std::forward<T>(value)))
+			: m_pValue(std::make_unique<impl::ConcreteHolder<T>>(std::forward<T>(value)))
 			, m_typeHash(getTypeHash<T>())
 		{}
 
@@ -79,9 +80,6 @@ namespace kmu
 		{
 			assert(that.m_pValue);
 			m_pValue = std::move(that.m_pValue);
-
-			that.m_typeHash = getTypeHash<NullType>();
-			m_pValue = nullptr;
 		}
 
 		any& operator=(any&& that)
@@ -89,9 +87,6 @@ namespace kmu
 			assert(that.m_pValue);
 			m_typeHash = that.m_typeHash;
 			m_pValue = std::move(that.m_pValue);
-
-			that.m_typeHash = getTypeHash<NullType>();
-			that.m_pValue = nullptr;
 
 			return *this;
 		}
@@ -113,18 +108,38 @@ namespace kmu
 		}
 
 		template<typename T>
-		T& as()
+		T& as() noexcept
 		{
 			assert(is<T>());
-			assert(dynamic_cast<impl::x_Concrete<T>*>(m_pValue.get()));
+			assert(dynamic_cast<impl::ConcreteHolder<T>*>(m_pValue.get()));
 
-			return static_cast<impl::x_Concrete<T>&>(*m_pValue).m_content;
+			return static_cast<impl::ConcreteHolder<T>&>(*m_pValue).m_content;
+		}
+
+		template<typename T>
+		const T& as() const noexcept
+		{
+			assert(is<T>());
+			assert(dynamic_cast<const impl::ConcreteHolder<T>*>(m_pValue.get()));
+
+			return static_cast<const impl::ConcreteHolder<T>&>(*m_pValue).m_content;
+		}
+
+		void swap(any& that) noexcept
+		{
+			std::swap(m_pValue, that.m_pValue);
+			std::swap(m_typeHash, that.m_typeHash);
 		}
 
 	private:
-		std::unique_ptr<impl::x_Base> m_pValue;
+		std::unique_ptr<impl::HolderBase> m_pValue;
 		size_t m_typeHash;
 	};
+
+	inline void swap(any& lhs, any& rhs) noexcept
+	{
+		lhs.swap(rhs);
+	}
 
 	template<typename T, typename... Ts>
 	any makeAny(Ts&&... ts)
