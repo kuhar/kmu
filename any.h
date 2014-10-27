@@ -21,8 +21,10 @@ namespace kmu
 	{
 		struct HolderBase
 		{
-			virtual std::unique_ptr<HolderBase> clone() const = 0;
 			virtual ~HolderBase() = default;
+			virtual std::unique_ptr<HolderBase> clone() const = 0;
+			virtual std::type_index getTypeIndex() const noexcept = 0;
+			virtual size_t getHash() const noexcept = 0;
 		};
 
 		template<typename T>
@@ -38,6 +40,16 @@ namespace kmu
 				return std::make_unique<ConcreteHolder>(m_content);
 			}
 
+			std::type_index getTypeIndex() const noexcept override
+			{
+				return typeid(T);
+			}
+
+			size_t getHash() const noexcept override
+			{
+				return getTypeIndex().hash_code();
+			}	
+
 			T m_content;
 		};
 	} // namespace impl
@@ -46,21 +58,18 @@ namespace kmu
 	class any
 	{
 	public:
-		using NullType = null_t;
+		using NullType = kmu::null_t;
 
 		any()
 			: m_pValue(std::make_unique<impl::ConcreteHolder<NullType>>())
-			, m_typeHash(getTypeHash<NullType>())
 		{}
 
 		template<typename T>
 		any(T&& value)
 			: m_pValue(std::make_unique<impl::ConcreteHolder<T>>(std::forward<T>(value)))
-			, m_typeHash(getTypeHash<T>())
 		{}
 
 		any(const any& that)
-			: m_typeHash(that.m_typeHash)
 		{
 			assert(that.m_pValue);
 			m_pValue = that.m_pValue->clone();
@@ -69,14 +78,12 @@ namespace kmu
 		any& operator=(const any& that)
 		{
 			assert(that.m_pValue);
-			m_typeHash = that.m_typeHash;
 			m_pValue = that.m_pValue->clone();
 
 			return *this;
 		}
 
 		any(any&& that)
-			: m_typeHash(that.m_typeHash)
 		{
 			assert(that.m_pValue);
 			m_pValue = std::move(that.m_pValue);
@@ -85,7 +92,6 @@ namespace kmu
 		any& operator=(any&& that)
 		{
 			assert(that.m_pValue);
-			m_typeHash = that.m_typeHash;
 			m_pValue = std::move(that.m_pValue);
 
 			return *this;
@@ -94,7 +100,8 @@ namespace kmu
 		template<typename T>
 		bool is() const noexcept
 		{
-			return m_typeHash == getTypeHash<T>();
+			assert(m_pValue);
+			return m_pValue->getHash() == getTypeHash<T>();
 		}
 
 		bool isNull() const noexcept
@@ -111,8 +118,6 @@ namespace kmu
 		T& as() noexcept
 		{
 			assert(is<T>());
-			assert(dynamic_cast<impl::ConcreteHolder<T>*>(m_pValue.get()));
-
 			return static_cast<impl::ConcreteHolder<T>&>(*m_pValue).m_content;
 		}
 
@@ -120,20 +125,16 @@ namespace kmu
 		const T& as() const noexcept
 		{
 			assert(is<T>());
-			assert(dynamic_cast<const impl::ConcreteHolder<T>*>(m_pValue.get()));
-
 			return static_cast<const impl::ConcreteHolder<T>&>(*m_pValue).m_content;
 		}
 
 		void swap(any& that) noexcept
 		{
 			std::swap(m_pValue, that.m_pValue);
-			std::swap(m_typeHash, that.m_typeHash);
 		}
 
 	private:
 		std::unique_ptr<impl::HolderBase> m_pValue;
-		size_t m_typeHash;
 	};
 
 	inline void swap(any& lhs, any& rhs) noexcept
