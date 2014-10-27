@@ -121,11 +121,13 @@ int main()
 
 	any yyy = 42;
 	cout << "\n" << yyy.isNull() << "\t" << yyy.is<int>() << "\t" << yyy.as<int>() << "\n";
+	yyy = "xaxaxxaxa\n";
+	cout << yyy.getTypeIndex().name() << "\t" << yyy.as<const char*>();
+	yyy = 4.5f;
+	cout << yyy.is<float>() << "\t" << yyy.as<float>() << "\n";
 
 	any zzz = makeAny<size_t>(33);
 	cout << "\n" << zzz.isNull() << "\t" << zzz.is<int>() << "\t" << zzz.as<size_t>() << "\n";
-	zzz = std::move(yyy);
-	cout << "\n" << zzz.isNull() << "\t" << zzz.is<int>() << "\t" << zzz.as<int>() << "\n";
 
 	return 0;
 }

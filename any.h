@@ -69,6 +69,11 @@ namespace kmu
 			: m_pValue(std::make_unique<impl::ConcreteHolder<T>>(std::forward<T>(value)))
 		{}
 
+		template<size_t N>
+		any(const char (&value)[N])
+			: m_pValue(std::make_unique<impl::ConcreteHolder<const char*>>(value))
+		{}
+
 		any(const any& that)
 		{
 			assert(that.m_pValue);
@@ -126,6 +131,12 @@ namespace kmu
 		{
 			assert(is<T>());
 			return static_cast<const impl::ConcreteHolder<T>&>(*m_pValue).m_content;
+		}
+
+		std::type_index getTypeIndex() const noexcept
+		{
+			assert(m_pValue);
+			return m_pValue->getTypeIndex();
 		}
 
 		void swap(any& that) noexcept
