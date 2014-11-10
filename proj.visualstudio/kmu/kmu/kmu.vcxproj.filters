@@ -1,46 +1,47 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{d7da8c4b-dffd-4d53-97c8-cab5993b8063}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\function_traits.h">
+    <ClInclude Include="..\..\..\algorithms.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\handy.h">
+    <ClInclude Include="..\..\..\any.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\integer_sequence.h">
+    <ClInclude Include="..\..\..\apply.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\method_traits.h">
+    <ClInclude Include="..\..\..\function_traits.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\template_math.h">
+    <ClInclude Include="..\..\..\handy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\variant.h">
+    <ClInclude Include="..\..\..\integer_sequence.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\type_list.h">
+    <ClInclude Include="..\..\..\method_traits.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\algorithms.h">
+    <ClInclude Include="..\..\..\template_math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\apply.h">
+    <ClInclude Include="..\..\..\type_list.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\any.h">
+    <ClInclude Include="..\..\..\uninitialized.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\uninitialized.h">
+    <ClInclude Include="..\..\..\variant.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
