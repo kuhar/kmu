@@ -17,6 +17,7 @@ struct someClass
 {
 	someClass()
 	{
+		cout << "ctor\n";
 	}
 
 	~someClass()
@@ -130,8 +131,11 @@ int main()
 	any zzz = makeAny<size_t>(33);
 	cout << "\n" << zzz.isNull() << "\t" << zzz.is<int>() << "\t" << zzz.as<size_t>() << "\n";
 
+
+
 	auto func = [](auto... xs){ cout << endl << sizeof... (xs) << endl; };
-	curry(func)(1, 2.0f, 3.0)('4', "5")();
+	cout << "start\n";
+	curry(func)(1, 2.0f, 3.0)(someClass{})('4', "5")();
 
 	return 0;
 }

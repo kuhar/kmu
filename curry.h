@@ -31,8 +31,13 @@ namespace kmu
 				return kmu::apply(f, args);
 			}
 
+			decltype(auto) operator()() const
+			{
+				return kmu::apply(f, args);
+			}
+
 			template<typename... Rs>
-			curry_helper<F, Ts..., Rs...> operator()(Rs&&... rs)
+			curry_helper<F, Ts..., Rs...> operator()(Rs&&... rs) const
 			{
 				return {f, std::tuple_cat(args,
 					std::forward_as_tuple(std::forward<Rs>(rs)...))};
