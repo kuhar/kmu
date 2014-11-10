@@ -14,6 +14,7 @@
     <ClInclude Include="..\..\..\algorithms.h" />
     <ClInclude Include="..\..\..\any.h" />
     <ClInclude Include="..\..\..\apply.h" />
+    <ClInclude Include="..\..\..\curry.h" />
     <ClInclude Include="..\..\..\function_traits.h" />
     <ClInclude Include="..\..\..\handy.h" />
     <ClInclude Include="..\..\..\integer_sequence.h" />

@@ -8,6 +8,7 @@
 #include "type_list.h"
 #include "algorithms.h"
 #include "any.h"
+#include "curry.h"
 
 using namespace std;
 using namespace kmu;
@@ -128,6 +129,9 @@ int main()
 
 	any zzz = makeAny<size_t>(33);
 	cout << "\n" << zzz.isNull() << "\t" << zzz.is<int>() << "\t" << zzz.as<size_t>() << "\n";
+
+	auto func = [](auto... xs){ cout << endl << sizeof... (xs) << endl; };
+	curry(func)(1, 2.0f, 3.0)('4', "5")();
 
 	return 0;
 }
