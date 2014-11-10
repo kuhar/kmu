@@ -17,7 +17,7 @@ struct someClass
 	someClass()
 	{
 	}
-	
+
 	~someClass()
 	{
 		cout << "Annihilation:\t" << id << endl;
@@ -35,7 +35,7 @@ struct someClass
 
 	int id = 0;
 
-	struct animus 
+	struct animus
 	{
 		int wtw = 3;
 	};
@@ -43,7 +43,7 @@ struct someClass
 
 int main()
 {
-	apply([]( int){ cout << "Wazzza?"; }, make_tuple(1));
+	//apply([](int){ cout << "Wazzza?"; }, make_tuple(1));
 	Variant<int, char, vector<int>> myVariant;
 	myVariant.set<int>(5);
 	cout << myVariant.get<int>();
@@ -87,12 +87,12 @@ int main()
 	::get<1>(original).id = 12;
 	cout << original.get<someClass>().id << endl;
 	original.set<someClass>(someClass());
-	auto moveTest = std::move( original );
+	auto moveTest = std::move(original);
 	cout << sizeof(moveTest) << endl;
 	cout << sizeof(moveTest.getCurrentTypeIndex()) << endl;
 	cout << sizeof(someClass) << endl;
 
-	cout << type_index( 
+	cout << type_index(
 		typeid(kmu::get_type_at<3, int, char, bool, void, short>::type)).name() << "\n";
 	cout << getTypeIndexOfTypeAt<int, char, bool, void, short>(3).name() << "\n";
 	cout << kmu::get_index_of_type<void, bool, char, int, short, void, long>::value << "\n";
