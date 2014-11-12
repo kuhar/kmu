@@ -24,14 +24,16 @@ struct someClass
 		cout << "Annihilation:\t" << id << endl;
 	}
 
-	someClass(someClass&&)
+	someClass(someClass&& other)
 	{
-		cout << "move ctor\n";
+		id = other.id + 1;
+		cout << "move ctor:\t" << id << "\n";
 	}
 
-	someClass(const someClass&)
+	someClass(const someClass& other)
 	{
-		cout << "copy ctor\n";
+		id = other.id + 1;
+		cout << "copy ctor:\t" << id << "\n";
 	}
 
 	int id = 0;
@@ -130,8 +132,10 @@ int main()
 	any zzz = makeAny<size_t>(33);
 	cout << "\n" << zzz.isNull() << "\t" << zzz.is<int>() << "\t" << zzz.as<size_t>() << "\n";
 
+	cout << "------------------------\n";
 	auto func = [](auto... xs){ cout << endl << sizeof... (xs) << endl; };
-	curry(func)(1, 2.0f, 3.0)('4', "5")();
+	curry(func)(1, 2.0f, someClass{})('4', "5")();
+	cout << "------------------------\n";
 
 	return 0;
 }

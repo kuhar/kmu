@@ -26,13 +26,25 @@ namespace kmu
 				, args(std::forward<Tuple>(a))
 			{}
 
-			decltype(auto) operator()()
+			decltype(auto) operator()() &&
+			{
+				return kmu::apply(std::move(f), std::move(args));
+			}
+
+			decltype(auto) operator()() const&
 			{
 				return kmu::apply(f, args);
 			}
 
 			template<typename... Rs>
-			curry_helper<F, Ts..., Rs...> operator()(Rs&&... rs)
+			curry_helper<F, Ts..., Rs...> operator()(Rs&&... rs) &&
+			{
+				return {f, std::tuple_cat(std::move(args),
+					std::forward_as_tuple(std::forward<Rs>(rs)...))};
+			}
+
+			template<typename... Rs>
+			curry_helper<F, Ts..., Rs...> operator()(Rs&&... rs) const&
 			{
 				return {f, std::tuple_cat(args,
 					std::forward_as_tuple(std::forward<Rs>(rs)...))};
@@ -44,7 +56,7 @@ namespace kmu
 	}
 
 	template<typename F>
-	impl::curry_helper<F> curry(F&& f)
+	impl::curry_helper<F&&> curry(F&& f)
 	{
 		return {std::forward<F>(f), std::make_tuple()};
 	}
