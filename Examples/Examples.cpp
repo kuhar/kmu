@@ -15,7 +15,8 @@ using namespace kmu;
 
 struct someClass
 {
-	someClass()
+	someClass(int id = 0)
+		: id(id)
 	{
 	}
 
@@ -136,6 +137,21 @@ int main()
 	auto func = [](auto... xs){ cout << endl << sizeof... (xs) << endl; };
 	curry(func)(1, 2.0f, someClass{})('4', "5")();
 	cout << "------------------------\n";
+	curry([](auto&&, auto&&){ cout << "done\n"; })(someClass{})(someClass{10})();
+	cout << "------------------------\n";
+
+	struct NonCopyable
+	{
+		NonCopyable() = default;
+		NonCopyable(NonCopyable const&) = delete;
+		NonCopyable& operator=(NonCopyable const&) = delete;
+	} nc;
+
+	auto cc = curry([](NonCopyable&&){ cout << "nc\n"; })(std::move(nc));
+	cc();
+
+	const auto xx = curry([](auto&&){})('x');
+	xx();
 
 	return 0;
 }
