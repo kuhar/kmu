@@ -210,4 +210,19 @@ namespace kmu
 		static const size_t hash = std::type_index(typeid( T )).hash_code();
 		return hash;
 	}
+
+	struct NonCopyable
+	{
+		NonCopyable() = default;
+		NonCopyable(const NonCopyable&) = delete;
+		NonCopyable& operator=(const NonCopyable&) = delete;
+	};
+
+	struct NonMovable
+	{
+		NonMovable() = default;
+		NonMovable(NonMovable&&) = delete;
+		NonMovable& operator=(NonMovable&&) = delete;
+	};
+
 } // namespace kmu

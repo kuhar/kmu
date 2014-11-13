@@ -140,13 +140,7 @@ int main()
 	curry([](auto&&, auto&&){ cout << "done\n"; })(someClass{})(someClass{10})();
 	cout << "------------------------\n";
 
-	struct NonCopyable
-	{
-		NonCopyable() = default;
-		NonCopyable(NonCopyable const&) = delete;
-		NonCopyable& operator=(NonCopyable const&) = delete;
-	} nc;
-
+	NonCopyable nc;
 	auto cc = curry([](NonCopyable&&){ cout << "nc\n"; })(std::move(nc));
 	cc();
 
