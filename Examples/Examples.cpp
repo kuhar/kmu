@@ -15,9 +15,9 @@ using namespace kmu;
 
 struct someClass
 {
-	someClass()
+	someClass(int id = 0)
+		: id(id)
 	{
-		cout << "ctor\n";
 	}
 
 	~someClass()
@@ -25,14 +25,16 @@ struct someClass
 		cout << "Annihilation:\t" << id << endl;
 	}
 
-	someClass(someClass&&)
+	someClass(someClass&& other)
 	{
-		cout << "move ctor\n";
+		id = other.id + 1;
+		cout << "move ctor:\t" << id << "\n";
 	}
 
-	someClass(const someClass&)
+	someClass(const someClass& other)
 	{
-		cout << "copy ctor\n";
+		id = other.id + 1;
+		cout << "copy ctor:\t" << id << "\n";
 	}
 
 	int id = 0;
@@ -131,11 +133,25 @@ int main()
 	any zzz = makeAny<size_t>(33);
 	cout << "\n" << zzz.isNull() << "\t" << zzz.is<int>() << "\t" << zzz.as<size_t>() << "\n";
 
-
-
+	cout << "------------------------\n";
 	auto func = [](auto... xs){ cout << endl << sizeof... (xs) << endl; };
-	cout << "start\n";
-	curry(func)(1, 2.0f, 3.0)(someClass{})('4', "5")();
+	curry(func)(1, 2.0f, someClass{})('4', "5")();
+	cout << "------------------------\n";
+	curry([](auto&&, auto&&){ cout << "done\n"; })(someClass{})(someClass{10})();
+	cout << "------------------------\n";
+
+	struct NonCopyable
+	{
+		NonCopyable() = default;
+		NonCopyable(NonCopyable const&) = delete;
+		NonCopyable& operator=(NonCopyable const&) = delete;
+	} nc;
+
+	auto cc = curry([](NonCopyable&&){ cout << "nc\n"; })(std::move(nc));
+	cc();
+
+	const auto xx = curry([](auto&&){})('x');
+	xx();
 
 	return 0;
 }

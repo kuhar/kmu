@@ -107,6 +107,12 @@ namespace kmu
 	template<typename T>
 	using type_t = typename impl::type_t_helper<T>::type;
 
+	template<typename T>
+	using remove_ref_t = type_t<std::remove_reference<T>>;
+
+	template<typename T>
+	using remove_cv_ref_t = type_t<std::remove_cv<kmu::remove_ref_t<T>>>;
+
 	template<bool value, typename First, typename Second>
 	using if_t = type_t<std::conditional<value, First, Second>>;
 
