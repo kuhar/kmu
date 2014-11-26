@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <functional>
+#include <stdexcept>
 
 #include "apply.h"
 #include "variant.h"
@@ -9,6 +10,8 @@
 #include "algorithms.h"
 #include "any.h"
 #include "curry.h"
+#include "macros.h"
+
 
 using namespace std;
 using namespace kmu;
@@ -146,6 +149,17 @@ int main()
 
 	const auto xx = curry([](auto&&){})('x');
 	xx();
+
+	enforce(true, "Always true");
+	try
+	{
+		enforce(5 + 8 < 13, "Always throws");
+	}
+	catch(...)
+	{
+		cout << "\nGotcha!\n";
+	}
+
 
 	return 0;
 }
