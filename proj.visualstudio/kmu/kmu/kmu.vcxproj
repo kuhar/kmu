@@ -18,6 +18,7 @@
     <ClInclude Include="..\..\..\function_traits.h" />
     <ClInclude Include="..\..\..\handy.h" />
     <ClInclude Include="..\..\..\integer_sequence.h" />
+    <ClInclude Include="..\..\..\macros.h" />
     <ClInclude Include="..\..\..\method_traits.h" />
     <ClInclude Include="..\..\..\template_math.h" />
     <ClInclude Include="..\..\..\type_list.h" />

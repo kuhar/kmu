@@ -6,4 +6,5 @@
 *
 */ 
 
-#define enforce(expression, message) void(!(expression) && (throw std::runtime_error(message), true))
+#define enforce(expression, message) (void) \
+	(!!(expression) || (throw std::runtime_error(message), false))
