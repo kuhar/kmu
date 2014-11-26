@@ -24,8 +24,9 @@ namespace kmu
 		public:
 			template<typename Tuple>
 			curry_helper(Functor&& fn, Tuple&& args)
-				: m_functor(std::forward<Functor>(fn))
-				, m_args(std::forward<Tuple>(args))
+				: m_args(std::forward<Tuple>(args))
+				, m_functor(std::forward<Functor>(fn))
+				
 			{}
 
 			decltype(auto) destructiveCall()
@@ -51,7 +52,7 @@ namespace kmu
 			template<typename... Rs>
 			curry_helper<Functor, Ts..., Rs&&...> operator()(Rs&&... rs) &&
 			{
-				return {std::move(m_functor), std::tuple_cat(std::move(m_args),
+				return {Functor(std::move(m_functor)), std::tuple_cat(std::move(m_args),
 					std::forward_as_tuple(std::forward<Rs>(rs)...))};
 			}
 
@@ -96,7 +97,7 @@ namespace kmu
 	template<typename Functor>
 	impl::curry_helper<Functor> curry(Functor&& f)
 	{
-		return{std::forward<Functor>(f), std::make_tuple()};
+		return {std::forward<Functor>(f), std::make_tuple()};
 	}
 
 } // namespace kmu
