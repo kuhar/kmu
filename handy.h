@@ -70,7 +70,7 @@ namespace kmu
 	namespace impl
 	{
 		template<typename T>
-		struct DebugTypeTeller; // no impl - substitution always fail
+		struct DebugTypeTeller; // no impl - substitution always fails
 	}
 
 	template<typename T>
