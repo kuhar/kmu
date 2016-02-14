@@ -70,11 +70,11 @@ namespace kmu
 	namespace impl
 	{
 		template<typename T>
-		struct DebugTypeTeller; // no impl - substitution always fails 
+		struct DebugTypeTeller; // no impl - substitution always fail
 	}
 
 	template<typename T>
-	inline void debugTellType(T)
+	void debugTellType(T)
 	{
 		impl::DebugTypeTeller<T> t;
 		(void) t;
